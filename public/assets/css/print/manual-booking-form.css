@@ -1,0 +1,157 @@
+@media print {
+    body {
+        background: #fff;
+        color: #000;
+    }
+    #htopbar {
+        display: none;
+    }
+    header .col.col1 {
+        width: 100%;
+        float: none;
+    }
+    header .col.col2 {
+        display: none;
+    }
+    header .logo {
+        width: auto;
+        height: 65px;
+    }
+    #mian-menu-icon-mobile {
+        display: none;
+    }
+    #mobile-searchbar {
+        display: none;
+    }
+    body .center {
+        width: auto;
+        margin: 0 1cm;
+    }
+    .quicklinks.tts-desktop {
+        display: none;
+    }
+    header .header-book-buttons {
+        display: none;
+    }
+    #main-nav {
+        display: none;
+    }
+    main .col.col1 {
+        margin: 0;
+        padding: 0;
+    }
+    .woocommerce form .form-row {
+        margin: 0 0 0;
+    }
+    .woocommerce form .form-row input.input-text {
+        height: 24px;
+        line-height: 24px;
+        padding: 0 10px 5px;
+    }
+    .woocommerce form .form-row .input-text:placeholder-shown {
+        color: transparent;
+    }
+    .woocommerce form .form-row .input-text::-webkit-input-placeholder {
+        opacity: 0!important;
+    }
+    .woocommerce form .form-row .input-text:-moz-placeholder,
+    .woocommerce form .form-row .input-text:-ms-input-placeholder,
+    .woocommerce form .form-row .input-text:-moz-placeholder ,
+    .woocommerce form .form-row .input-text:placeholder {
+        opacity: 0;
+    }
+    .woocommerce form .form-row textarea.input-text {
+        height: 60px;
+    }
+    
+    .woocommerce form .form-row input.input-text, 
+    .woocommerce form .form-row textarea, 
+    body .tbs-wc-page-content .select2-container--default .select2-selection--single, 
+    body .woocommerce-checkout .select2-container--default .select2-selection--single, 
+    #mbs-customer-details select {
+        background-color: transparent;
+        border-color: rgba(0,0,0,.1);
+        font-size: 12px;
+    }
+    .woocommerce form .form-row-first, 
+    .woocommerce form .form-row-last, 
+    .woocommerce-page form .form-row-first, 
+    .woocommerce-page form .form-row-last {
+        width: 100%;
+        float: none;
+    }
+    h1, h2, h3, .entry-title, .mbs-section-title, .mbs-course-delegate-title {
+        color: #000;
+    }
+    .tbswc-course-name a {
+        color: #4c4c4c;
+        text-decoration: underline;
+    }
+    
+    .mbs-section-submit {
+        display: none;
+    }
+    footer {
+        display: none;
+    }
+    body {
+        font-size: 10px;
+        line-height: 14px;
+    }
+.manual-booking-form .entry-title {
+    font-size: 17px;
+    line-height: 17px;
+    margin: 0 0 5px;
+}
+.mbs-section-title {
+    font-size: 14px;
+    line-height: 14px;
+    margin: 0 0 5px;
+}
+.mbs-course-delegate-title {
+    font-size: 13px;
+    line-height: 13px;
+    margin: 0 0 5px;
+}
+.mbs-course-delegate {
+    page-break-inside: avoid;
+}
+.woocommerce form .form-row label {
+    line-height: 1em;
+}
+.woocommerce table.shop_table th,
+.woocommerce table.shop_table td{
+    padding: 5px 12px;
+}
+.manual-booking-section {
+    margin-bottom: 5px;;
+}
+.woocommerce table.shop_table {
+    margin-bottom: 0!important;
+}
+.quicklinks.tts-mobile {
+    margin: 0;
+}
+.woocommerce form #billing_first_name_field.form-row,
+.woocommerce form #billing_company_field.form-row,
+.woocommerce form #billing_city_field.form-row,
+.woocommerce form #billing_phone_field.form-row
+{
+    float: left;
+    width: 47%;
+    clear: both;
+}
+
+.woocommerce form #billing_last_name_field.form-row,
+.woocommerce form #billing_country_field.form-row,
+.woocommerce form #billing_state_field.form-row,
+.woocommerce form #billing_postcode_field.form-row,
+.woocommerce form #billing_email_field.form-row
+{
+    float: right;
+    width: 47%;
+    clear: none;
+}
+
+
+}
