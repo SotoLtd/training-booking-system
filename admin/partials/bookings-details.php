@@ -43,7 +43,7 @@ $finance_contact_email = get_post_meta($order->get_id(), 'finance_contact_email'
 					</address>
 					<?php if ( $order->get_billing_email() ) : ?>
 						<h4>Email address:</h4>
-						<p class="woocommerce-customer-details--email"><?php echo wc_make_phone_clickable (esc_html( $order->get_billing_email() )); ?></p>
+						<p class="woocommerce-customer-details--email"><a href="mailto:<?php echo esc_attr($order->get_billing_email()); ?>"><?php echo  $order->get_billing_email(); ?></a></p>
 					<?php endif; ?>
 					<?php if ( $order->get_billing_phone() ) : ?>
 						<h4>Phone:</h4>
