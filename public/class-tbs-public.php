@@ -1116,7 +1116,10 @@ class TBS_Public {
 	}
 	public function woocommerce_email_from_address($form_email, $email_handler) {
 		if('customer_new_account' == $email_handler->id){
-			$form_email = "info@thetrainingsocieti.co.uk";
+			$email = trim(tbs_get_settings('new_customer_form_email', ''));
+			if($email){
+				$form_email = $email;
+			}
 		}
 		return $form_email;
 	}
@@ -1361,14 +1364,17 @@ class TBS_Public {
 				}
 				
 				
-
-				wp_mail(
-					'bookings@thetrainingsocieti.co.uk',
-					$subject,
-					$message,
-					'',
-					array($pdf_file_name)
-				);
+				
+				$from_email = tbs_get_settings('online_form_manual_email', '');
+				if($from_email){
+					wp_mail(
+						$from_email,
+						$subject,
+						$message,
+						'',
+						array($pdf_file_name)
+					);
+				}
 				wp_redirect(add_query_arg(array('booking_manual_key' => $online_form_key, 'status' => 'submitted'), site_url()), 200);
 				exit;
 			}

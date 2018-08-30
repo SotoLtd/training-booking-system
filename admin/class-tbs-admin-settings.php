@@ -142,6 +142,18 @@ class TBS_Admin_Settings {
 					'label' => __('CC Email'),
 					'description' => __('Mulitple emails can be added separated by comma(,).', TBS_i18n::get_domain_name()),
 				),
+				array(
+					'id' => 'online_form_manual_email',
+					'type' => 'text',
+					'label' => __('Online Form Email'),
+					'description' => __('Add email address to which the online form will be sent for manual bookings.', TBS_i18n::get_domain_name()),
+				),
+				array(
+					'id' => 'new_customer_form_email',
+					'type' => 'text',
+					'label' => __('New Customer Form Email'),
+					'description' => __('New customer from email address.', TBS_i18n::get_domain_name()),
+				),
 			),
 		);
 		
