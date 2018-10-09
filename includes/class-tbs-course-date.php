@@ -225,6 +225,25 @@ class TBS_Course_Date {
 		}
 		return (int)$location_id;
 	}
+	public function get_location_groups(){
+		$location_id = $this->get_location_id();
+		if(!$location_id){
+			return false;
+		}
+		$location_groups = get_the_terms($location_id, TBS_Custom_Types::get_location_group_data('type'));
+		if(!$location_groups || is_wp_error($location_groups)) {
+			return false;
+		}
+		$lgs = array();
+		foreach($location_groups as $lg) {
+			$lgs[$lg->slug] = array(
+				'id' => $lg->term_id,
+				'title' => $lg->name,
+				'slug' => $lg->slug,
+			);
+		}
+		return $lgs;
+	}
 	public function has_custom_address(){
 		return 'tbs_custom' === $this->location;
 	}

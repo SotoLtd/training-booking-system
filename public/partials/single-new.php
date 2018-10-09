@@ -53,16 +53,9 @@ $course_page_nottice = isset($course_settings['course_page_nottice'])?$course_se
                                 <h4>Location</h4>
                                 <?php 
                                 echo '<ul>';
-                                foreach($the_course->location as $cl){ 
-                                    echo '<li>';
-                                    if('bristol' == $cl){ 
-                                        echo 'Bristol';
-                                    }elseif(('onsite' == $cl)){ 
-                                        echo 'On site';
-                                    }elseif('nationaltc' == $cl){ 
-                                        echo 'National Training Centres';
-                                    }
-                                    echo '</li>';
+                                foreach($the_course->location as $cl){
+									$location_group_term = get_term_by('slug', $cl, TBS_Custom_Types::get_location_group_data('type'));
+                                    echo '<li>'.  $location_group_term->name . '</li>';
                                 }
                                 echo '</ul>';
                                 ?>
@@ -76,12 +69,19 @@ $course_page_nottice = isset($course_settings['course_page_nottice'])?$course_se
                                 </div>
                             </div>
                             <?php } ?>
-                            
-                            <?php if($the_course->loc_britol && $the_course->linked_course_code){ ?>
-                            <div class="course-sbelement course-book-in-bristol">
-                                <a title="" href="<?php echo get_page_link(361) . '?course_id=' . $the_course->id; ?>">BOOK IN BRISTOL</a>
-                            </div>
-                            <?php } ?>
+                            <?php 
+							foreach($the_course->location as $cl){
+								if( in_array($cl, array('onsite', 'nationaltc') )){
+									continue;
+								}
+								$location_group_term = get_term_by('slug', $cl, TBS_Custom_Types::get_location_group_data('type'));
+								?>
+								<div class="course-sbelement course-book-in-bristol">
+									<a title="" href="<?php echo get_page_link(361) . '?course_id=' . $the_course->id . '&location=' . $location_group_term->slug;?>">BOOK IN <?php echo $location_group_term->name; ?></a>
+								</div>
+							<?php
+							}
+							?>
                         </div>
                         <div class="course-enquiry-form">
                             <h5 class="course-ef-title">Enquire</h5>
@@ -124,7 +124,6 @@ $course_page_nottice = isset($course_settings['course_page_nottice'])?$course_se
                             
                             <div class="course-normal-text course-traingin-status">
                                 <h3 id="course-dates-list">Course Dates</h3>
-								<div class="course-training-name">Bristol</div>
 									<?php
 									$queried_date = absint( get_query_var('date', 0) );
 									if($queried_date){

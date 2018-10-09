@@ -32,7 +32,11 @@
         function( settings, searchData, index ) {
             var $filterCourse = $(settings.nTable).closest('.course-date-table-wrap').find('.course-table-filter-course'), 
                 $filterMonth = $(settings.nTable).closest('.course-date-table-wrap').find('.course-table-filter-months'),
-                filterCourseID, rowCourseID, filterMonthNum, rowMonthNum, monthPassed = true, coursePassed = true;
+                $filterLocation = $(settings.nTable).closest('.course-date-table-wrap').find('.course-table-filter-locgroup'),
+                filterCourseID, rowCourseID, filterMonthNum, rowMonthNum, filterLocationSlug, rowLocationSlug, 
+                monthPassed = true, 
+                coursePassed = true, 
+                locationPassed = true;
             if(!$filterCourse.length && !$filterMonth.length){
                 return true;
             }
@@ -60,7 +64,18 @@
                     monthPassed = false;
                 }
             }
-            return monthPassed && coursePassed;
+            if($filterLocation.length ){
+                filterLocationSlug = $filterLocation.find('option:selected').val();
+                rowLocationSlug = searchData[2];
+                if(typeof filterLocationSlug === "undefiend"){
+                    filterLocationSlug = '';
+                }
+                rowLocationSlug = rowLocationSlug.split(',');
+                if(filterLocationSlug && (rowLocationSlug.indexOf(filterLocationSlug) === -1) ){
+                    locationPassed = false;
+                }
+            }
+            return monthPassed && coursePassed && locationPassed;
         }
     );
     function isMobile(dw){
@@ -96,13 +111,16 @@
         });
         $('.course-date-table').each(function(){
             var $t = $(this),
-                tableDom = $t.data('domtype');
+                tableDom = $t.data('domtype'),
                 targets = [0];
-                if(!tableDom){
-                    tableDom = 'tip';
-                }
+            if(!tableDom){
+                tableDom = 'tip';
+            }
             if($t.closest('.course-date-table-wrap').find('.course-table-filter-course').length){
                 targets.push(1);
+            }
+            if($t.closest('.course-date-table-wrap').find('.course-table-filter-locgroup').length){
+                targets.push(2);
             }
             var table = $t.DataTable({
                 "dom": tableDom,
@@ -127,6 +145,9 @@
             $(this).closest('.course-date-table-wrap').find('.course-date-table').data('tbsdatatble').draw();
         });
         $('.course-table-filter-course').change(function(){
+            $(this).closest('.course-date-table-wrap').find('.course-date-table').data('tbsdatatble').draw();
+        });
+        $('.course-table-filter-locgroup').change(function(){
             $(this).closest('.course-date-table-wrap').find('.course-date-table').data('tbsdatatble').draw();
         });
         $('.cd-accr-addr-enable').each(function(){

@@ -37,6 +37,7 @@ class TBS_Custom_Types {/**
 			'course_category' => array('type' => 'course_category', 'slug' => 'category'),
 			'trainer' => array('type' => 'trainer', 'slug' => false),
 			'location' => array('type' => 'location', 'slug' => false),
+			'location_group' => array('type' => 'location_group', 'slug' => false),
 		);
 	}
 	
@@ -204,6 +205,46 @@ class TBS_Custom_Types {/**
 		);
 		register_post_type( $type_name, $args );
 	}
+	
+	/**
+	 * Custom Taxonomy register: Location Group
+	 */
+	private function location_group(){
+		$type_name = self::get_location_group_data('type');
+		$type_slug = self::get_location_group_data('slug');
+		$location_type_name = self::get_location_data('type');
+		$location_type_slug = self::get_location_data('slug');
+		$labels	 = array(
+			'name'						 => _x( 'Location Group', 'taxonomy general name', $this->text_domain_name ),
+			'singular_name'				 => _x( 'Location Group', 'taxonomy singular name', $this->text_domain_name ),
+			'search_items'				 => __( 'Search Location Groups', $this->text_domain_name ),
+			'popular_items'				 => __( 'Popular Location Groups', $this->text_domain_name ),
+			'all_items'					 => __( 'All Location Groups', $this->text_domain_name ),
+			'parent_item'				 => null,
+			'parent_item_colon'			 => null,
+			'edit_item'					 => __( 'Edit Location Group', $this->text_domain_name ),
+			'update_item'				 => __( 'Update Location Group', $this->text_domain_name ),
+			'add_new_item'				 => __( 'Add New Location Group', $this->text_domain_name ),
+			'new_item_name'				 => __( 'New Location Group', $this->text_domain_name ),
+			'separate_items_with_commas' => __( 'Separate Location Groups with commas', $this->text_domain_name ),
+			'add_or_remove_items'		 => __( 'Add or remove Location Group', $this->text_domain_name ),
+			'choose_from_most_used'		 => __( 'Choose from the most used Location Groups', $this->text_domain_name ),
+			'not_found'					 => __( 'No Location Group  found.', $this->text_domain_name ),
+			'menu_name'					 => __( 'Location Group', $this->text_domain_name ),
+		);
+		$args	 = array(
+			"labels"			 => $labels,
+			'public'			 => true,
+			'hierarchical'		 => true,
+			'show_ui'			 => true,
+			'show_in_nav_menus'	 => true,
+			'show_admin_column'	 => true,
+			'args'				 => array('orderby' => 'term_order'),
+			'query_var'			 => true,
+			'rewrite'			 => false,
+		);
+		register_taxonomy( $type_name, $location_type_name, $args );
+	}
 	/**
 	 * Post Status Register: WC Manual Draft
 	 */
@@ -262,6 +303,18 @@ class TBS_Custom_Types {/**
 		}
 		return self::$types_data['location'];
 	}
+	
+	/**
+	 * Get Location data
+	 * @param string $key
+	 * @return string
+	 */
+	public static function get_location_group_data($key = ''){
+		if($key && isset(self::$types_data['location_group'][$key])){
+			return self::$types_data['location_group'][$key];
+		}
+		return self::$types_data['location_group'];
+	}
 	/**
 	 * Register each custom types
 	 */
@@ -269,6 +322,7 @@ class TBS_Custom_Types {/**
 		$this->course_category();
 		$this->course();
 		$this->trainer();
+		$this->location_group();
 		$this->location();
 		$this->post_statuses();
 	}

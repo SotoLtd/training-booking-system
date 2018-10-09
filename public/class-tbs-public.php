@@ -207,7 +207,7 @@ class TBS_Public {
 			'orderby' => 'start_date',
 			'order'	=> 'ASC', // ASC, DESC
 			'trainer' => '',
-			'location' => '',
+			'locations' => '',
 			'course_ids' => '',
 			'date_ids' => '',
 			'show_private' => false,
@@ -228,6 +228,26 @@ class TBS_Public {
 		}
 		if(!empty($_GET['course_id'])) {
 			$query_args['course_ids'] = array(absint($_GET['course_id']));
+		}
+		if(!empty($_GET['location'])) {
+			$locations	 = get_posts(array(
+				'post_type' => TBS_Custom_Types::get_location_data( 'type' ),
+				'numberposts' => -1,
+				'fields' => 'ids',
+				'tax_query' => array(
+					array(
+						'taxonomy' => TBS_Custom_Types::get_location_group_data('type'),
+						'field' => 'slug',
+						'terms' => $_GET['location'],
+					),
+				),
+				
+			));
+			if($locations){
+				$query_args['locations'] = $locations;
+			}else{
+				return '';
+			}
 		}
 		// Get course dates
 		$course_dates = tbs_get_course_dates($query_args);

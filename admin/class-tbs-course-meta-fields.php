@@ -568,14 +568,21 @@ class TBS_Course_Meta_Fields {
 		if ( empty( $meta_value ) ) {
 			$meta_value = array();
 		}
+		$location_gropus = get_terms(array(
+			'taxonomy'	 => TBS_Custom_Types::get_location_group_data('type'),
+			'orderby'	 => 'name',
+			'order'		 => 'ASC',
+			'hide_empty' => false,
+			'parent'	 => 0
+		));
 		?>
 		<div class="tts-mb-field-wrap">
                     <div class="tts-mb-label"><strong><?php echo $meta_label; ?></strong></div>
                     <div class="tts-mb-field tts-checkbox-group">
                         <ul class="clearfix tts-mb-tcchecklists">
-                            <li><label><input type="checkbox" name="<?php echo $meta_key ?>[]" value="bristol" <?php checked( true, in_array( 'bristol', $meta_value ) ) ?>/><strong>Bristol</strong></label></li>
-                            <li><label><input type="checkbox" name="<?php echo $meta_key ?>[]" value="onsite" <?php checked( true, in_array( 'onsite', $meta_value ) ) ?>/><strong>On site by arrangement</strong></label></li>
-                            <li><label><input type="checkbox" name="<?php echo $meta_key ?>[]" value="nationaltc" <?php checked( true, in_array( 'nationaltc', $meta_value ) ) ?>/><strong>National Training Centres</strong></label></li>
+							<?php foreach($location_gropus as $group_obj): ?>
+								<li><label><input type="checkbox" name="<?php echo $meta_key ?>[]" value="<?php echo $group_obj->slug; ?>" <?php checked( true, in_array( $group_obj->slug, $meta_value ) ) ?>/><strong><?php echo $group_obj->name; ?></strong></label></li>
+							<?php endforeach; ?>
                         </ul>
                         <p class="description">Select location of the course.</p>
                     </div>

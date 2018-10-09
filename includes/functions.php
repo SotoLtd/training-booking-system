@@ -410,7 +410,7 @@ function tbs_get_course_dates($args){
 		'orderby' => 'start_date',
 		'order'	=> 'ASC', // ASC, DESC
 		'trainer' => '',
-		'location' => '',
+		'locations' => '',
 		'course_ids' => '',
 		'date_ids' => '',
 		'show_private' => false,
@@ -432,6 +432,14 @@ function tbs_get_course_dates($args){
 		$meta_query['course'] = array(
 			'key' => '_tbs_course',
 			'value' => $course_ids,
+			'compare' => 'IN',
+		);
+	}
+	if( is_array($locations) && count($locations) > 0){
+		$course_ids  = array_map('absint', $locations);
+		$meta_query['location'] = array(
+			'key' => '_tbs_location',
+			'value' => $locations,
 			'compare' => 'IN',
 		);
 	}
