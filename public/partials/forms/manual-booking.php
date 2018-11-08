@@ -375,5 +375,6 @@ if($msg){
 			<li><strong>Once this is paid we will send you confirmation and joining instructions.</strong></li>
 		</ol>
 		<p>For credit account customers we will send your invoice (payable within 30 days), joining instruction on completion and return of the booking form.</p>
+		<p>If you do not receive your Joining Instructions when expected, please check your Junk E-mail folder.</p>
 	</div>
 </form>

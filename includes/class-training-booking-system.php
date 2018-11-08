@@ -326,6 +326,7 @@ class Training_Booking_System {
 		$this->loader->add_filter('woocommerce_email_recipient_customer_invoice', $plugin_public, 'wc_customer_invoice_email_finance_contact', 10, 2);
 		
 		$this->loader->add_action('woocommerce_checkout_order_review', $plugin_public, 'email_optin_field', 15);
+		$this->loader->add_action('woocommerce_review_order_before_submit', $plugin_public, 'checkout_bottom_notices', 20);
 		
 		$this->loader->add_filter('woocommerce_account_menu_items', $plugin_public, 'woocommerce_account_menu_items', 10, 1);
 		$this->loader->add_filter('woocommerce_order_item_name', $plugin_public, 'woocommerce_order_item_name', 10, 3);

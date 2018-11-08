@@ -599,6 +599,10 @@ class TBS_Public {
 		tbs_get_template_part('checkout/email-optin-field');
 	}
 	
+	public function checkout_bottom_notices(){
+		tbs_get_template_part('checkout/bottom-notices');
+	}
+	
 	public function get_chekcout_addition_fields($include_addresses = false){
 		$fields = array();
 		foreach(WC()->cart->get_cart() as $cart_item_key => $cart_item){
