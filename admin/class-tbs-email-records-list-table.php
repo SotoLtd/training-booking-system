@@ -48,7 +48,8 @@ class TBS_Email_Records_List_Table extends WP_List_Table {
 		$this->order = $order;
 	}
 	public function can_be_shown_manual(){
-		if('manual' == $this->booking_type && $this->order->get_meta('tbs_data_entry_complete', true) && !$this->order->get_meta( 'tbs_suppress_order_emails', true)) {
+		$data_entry_comleted = 'completed' ==  $this->order->get_status();
+		if('manual' == $this->booking_type && $data_entry_comleted && !$this->order->get_meta( 'tbs_suppress_order_emails', true)) {
 			return true;
 		}
 		return false;

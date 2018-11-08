@@ -386,7 +386,7 @@ class TBS_Bookings_List_Table extends WP_List_Table {
 				break;
 		}
 		$order = wc_get_order($item['ID']);
-		if('manual' == $this->booking_type && $order->get_meta('tbs_data_entry_complete', true) && !$order->get_meta( 'tbs_suppress_order_emails', true)) {
+		if('manual' == $this->booking_type && ('completed' == $order->get_status()) && !$order->get_meta( 'tbs_suppress_order_emails', true)) {
 			$actions['view-email-record'] = sprintf('<a href="%s">Email records</a>', add_query_arg( array('action' => 'view_email_records', 'booking_id' => $item['ID']), $this->base_url) );
 		}
 		if('online' == $this->booking_type) {

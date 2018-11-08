@@ -828,7 +828,7 @@ class TBS_Admin {
 						$order->add_order_note( $note );
 					}
 				}
-			
+				$this->remove_course_dates_from_bookings_delegates_on_trash($order);
 				break;
 		}
 	}
@@ -864,8 +864,60 @@ class TBS_Admin {
 						$order->add_order_note( $note );
 					}
 				}
-			
+				$this->add_course_dates_from_bookings_delegates_on_untrash($order);
 				break;
+		}
+	}
+	
+	public function remove_course_dates_from_bookings_delegates_on_trash($order){
+		if('completed' != $order->get_status()){
+			return;
+		}
+		
+		$order_delegates = get_post_meta($order->get_id(), 'delegates', true);
+
+		$order_delegates_data = array();
+		$delegates_id = array();
+		if( is_array( $order_delegates ) && count($order_delegates) > 0 ){
+			foreach($order_delegates as $course_date_id => $d_ids){
+				$course_date = new TBS_Course_Date($course_date_id);
+				if(!$course_date->exists()){
+					continue;
+				}
+				if(!is_array($d_ids) || count($d_ids) == 0){
+					continue;
+				}
+				$serial_no = 0;
+				foreach($d_ids as $d_id){
+					delete_user_meta($d_id, 'tbs_course_dates', $course_date_id);
+				}
+			}
+		}
+	}
+	
+	public function add_course_dates_from_bookings_delegates_on_untrash($order){
+		if('completed' != $order->get_status()){
+			return;
+		}
+		
+		$order_delegates = get_post_meta($order->get_id(), 'delegates', true);
+
+		$order_delegates_data = array();
+		$delegates_id = array();
+		if( is_array( $order_delegates ) && count($order_delegates) > 0 ){
+			foreach($order_delegates as $course_date_id => $d_ids){
+				$course_date = new TBS_Course_Date($course_date_id);
+				if(!$course_date->exists()){
+					continue;
+				}
+				if(!is_array($d_ids) || count($d_ids) == 0){
+					continue;
+				}
+				$serial_no = 0;
+				foreach($d_ids as $d_id){
+					add_user_meta($d_id, 'tbs_course_dates', $course_date_id);
+				}
+			}
 		}
 	}
 	/**

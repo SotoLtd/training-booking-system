@@ -460,7 +460,9 @@ class TBS_Admin_Manual_Bookings {
 		}
 		$order_id = absint( tbs_arr_get( 'order_id', $_REQUEST ), 0);
 		$update = false;
-		$data_entry_complete = tbs_arr_get( 'data_entry_complete', $_REQUEST );
+		$order_status = isset($_POST['status']) && wc_is_order_status('wc-'.$_POST['status']) ? $_POST['status'] : 'tbs-draft';
+		$is_draft = 'tbs-draft' == $order_status;
+		$data_entry_complete = 'completed' == $order_status;
 		if(!current_user_can('manage_bookings')){
 			wp_send_json(array(
 				'status' => 'NOTOK',
@@ -477,7 +479,7 @@ class TBS_Admin_Manual_Bookings {
 			if('tbs_manual_booking' != $order->get_created_via()){
 				wp_send_json(array(
 					'status' => 'NOTOK',
-					'html' => 'You can not edit non manual orders!',
+					'html' => 'You can not edit non manual booking!',
 				));
 			}
 			$update = true;
@@ -486,6 +488,12 @@ class TBS_Admin_Manual_Bookings {
 			wp_send_json(array(
 				'status' => 'NOTOK',
 				'html' => 'Can not create/get order.',
+			));
+		}
+		if($update && 'completed' == $order->get_status()){
+			wp_send_json(array(
+				'status' => 'NOTOK',
+				'html' => 'You can not edit course dates of already completed booking!.',
 			));
 		}
 		$order_id = $order->get_id();
@@ -559,58 +567,6 @@ class TBS_Admin_Manual_Bookings {
 		
 		// Delete items that are removed from edit area
 		$line_items_to_delete = array_diff( $order_items,  $line_items_updated );
-		
-		
-		// Delete items that are removed from edit area
-		$line_items_to_delete = array_diff( $order_items,  $line_items_updated );
-		if($data_entry_complete && 'completed' != $order_status && count($line_items_updated) > 0){
-			$existing_delegates = get_post_meta($order_id, 'delegates', true);
-			foreach($line_items_updated as $order_line_item_id){
-				$line_item = WC_Order_Factory::get_order_item( $order_line_item_id );
-				if(!$line_item){
-					continue;
-				}
-				$product = $line_item->get_product();
-				if(!$product){
-					continue;
-				}
-				if(!array_key_exists( $product->get_id(), $existing_delegates)){
-					continue;
-				}
-				$new_delegates_number = $line_item->get_quantity();
-				// if delegates are removed
-				if(count($existing_delegates[$product->get_id()]) <= $new_delegates_number ){
-					continue;
-				}
-				$deleted_delegates = array_slice($existing_delegates[$product->get_id()], $new_delegates_number);
-				
-				foreach ($deleted_delegates as $delegate_id){
-					delete_user_meta($delegate_id, 'tbs_course_dates', $product->get_id());
-				}
-			}
-		}
-		// Remove courses from delegates account for completed booking
-		if($data_entry_complete && 'completed' != $order_status && count($line_items_to_delete) > 0){
-			$existing_delegates = get_post_meta($order_id, 'delegates', true);
-			$deleted_delegates = array();
-			foreach($line_items_to_delete as $order_line_item_id){
-				$line_item = WC_Order_Factory::get_order_item( $order_line_item_id );
-				if(!$line_item){
-					continue;
-				}
-				$product = $line_item->get_product();
-				if(!$product){
-					continue;
-				}
-				if(!array_key_exists( $product->get_id(), $existing_delegates)){
-					continue;
-				}
-				foreach ($existing_delegates[$product->get_id()] as $delegate_id){
-					delete_user_meta($delegate_id, 'tbs_course_dates', $product->get_id());
-				}
-			}
-		}
-		
 		foreach($line_items_to_delete as $order_line_item_id){
 			$line_item = WC_Order_Factory::get_order_item( $order_line_item_id );
 			if($line_item){
@@ -669,7 +625,7 @@ class TBS_Admin_Manual_Bookings {
 		// Get order status
 		$order_status = isset($_POST['status']) && wc_is_order_status('wc-'.$_POST['status']) ? $_POST['status'] : 'tbs-draft';
 		$is_draft = 'tbs-draft' == $order_status;
-		$data_entry_complete = tbs_arr_get( 'data_entry_complete', $_POST );
+		$data_entry_complete = 'completed' == $order_status;
 		$suppress_order_emails = tbs_arr_get( 'suppress_order_emails', $_POST, false );
 		
 		if(!$data_entry_complete || $suppress_order_emails){
@@ -726,139 +682,89 @@ class TBS_Admin_Manual_Bookings {
 			$customer_id = false;
 		}
 		
-		// Get orer line items
-		$order_items = $order->get_items();
-		
-		$order_items = array_keys($order_items);
-		
-		// Get new items to 
-		$items = !empty($_POST['items']) && is_array($_POST['items']) ? $_POST['items'] : array();
+		if('completed' != $order->get_status()){
+			// Get orer line items
+			$order_items = $order->get_items();
 
-		$prepeared_items = array();
-		
-		$line_items_updated = array();
-		foreach($items as $item){
-			$course_date = new TBS_Course_Date($item['id']);
-			// Remove the item form response if course does not exist
-			if(!$course_date->exists()){
-				continue;
-			}
-			$delegates = !empty($item['delegates']) ? absint($item['delegates']) : 0;
-			$delegates_qty = !$course_date->is_private() ? $delegates : 1;
-			// Remove the item if no delegates is set
-			if($delegates < 1){
-				continue;
-			}
-			if( $update && !empty($item['item_id']) && in_array( $item['item_id'], $order_items )){
-				// Update order line item that already exists
-				$line_item = WC_Order_Factory::get_order_item( absint( $item['item_id'] ) );
-				if(!$line_item){
+			$order_items = array_keys($order_items);
+
+			// Get new items to 
+			$items = !empty($_POST['items']) && is_array($_POST['items']) ? $_POST['items'] : array();
+
+			$prepeared_items = array();
+
+			$line_items_updated = array();
+			foreach($items as $item){
+				$course_date = new TBS_Course_Date($item['id']);
+				// Remove the item form response if course does not exist
+				if(!$course_date->exists()){
 					continue;
 				}
-				// Get old delegates number
-				$old_delegates_number = $line_item->get_quantity();
-				$line_item->set_props( array(
-					'quantity'     => $delegates,
-					'total'        => $item['total'],
-					'subtotal'     => $item['subtotal'],
-				) );
-				$line_item->save();
-				$line_item_id = absint( $item['item_id']);
-				$line_items_updated[] = $line_item_id;
-				// Update delegate stock
-				$this->change_wc_product_stock($order, $course_date->get_woo_porduct(), $old_delegates_number, $delegates);
-			}else{
-				$line_item_id = $order->add_product(
-					$course_date->get_woo_porduct(), 
-					$delegates_qty, 
-					array(
-						'name' => $course_date->get_course_title_with_date(),
+				$delegates = !empty($item['delegates']) ? absint($item['delegates']) : 0;
+				$delegates_qty = !$course_date->is_private() ? $delegates : 1;
+				// Remove the item if no delegates is set
+				if($delegates < 1){
+					continue;
+				}
+				if( $update && !empty($item['item_id']) && in_array( $item['item_id'], $order_items )){
+					// Update order line item that already exists
+					$line_item = WC_Order_Factory::get_order_item( absint( $item['item_id'] ) );
+					if(!$line_item){
+						continue;
+					}
+					// Get old delegates number
+					$old_delegates_number = $line_item->get_quantity();
+					$line_item->set_props( array(
+						'quantity'     => $delegates,
 						'total'        => $item['total'],
 						'subtotal'     => $item['subtotal'],
-					)
-				);
-				if(!$line_item_id){
-					continue;
-				}
-				$line_item = $order->get_item( $line_item_id );
-				
-				if($delegates != $delegates_qty){
-					$line_item->set_quantity($delegates);
+					) );
 					$line_item->save();
-				}
-				// Update delegate stock
-				$this->change_wc_product_stock($order, $course_date->get_woo_porduct(), 0, $delegates);
-			}
-			$course_date->reload();
-			$item_data = $course_date->get_json_model();
-			$item_data['delegates'] = $delegates;
-			$item_data['itemID'] = $line_item_id;
-			$item_data['subtotal'] = (float)$line_item->get_subtotal();
-			$item_data['total'] = (float)$line_item->get_total();
-			$prepeared_items[] = $item_data;
-		}
-		// Delete items that are removed from edit area
-		$line_items_to_delete = array_diff( $order_items,  $line_items_updated );
-		if($data_entry_complete && 'completed' != $order_status && count($line_items_updated) > 0){
-			$existing_delegates = get_post_meta($order_id, 'delegates', true);
-			if($existing_delegates){
-				foreach($line_items_updated as $order_line_item_id){
-					$line_item = WC_Order_Factory::get_order_item( $order_line_item_id );
-					if(!$line_item){
+					$line_item_id = absint( $item['item_id']);
+					$line_items_updated[] = $line_item_id;
+					// Update delegate stock
+					$this->change_wc_product_stock($order, $course_date->get_woo_porduct(), $old_delegates_number, $delegates);
+				}else{
+					$line_item_id = $order->add_product(
+						$course_date->get_woo_porduct(), 
+						$delegates_qty, 
+						array(
+							'name' => $course_date->get_course_title_with_date(),
+							'total'        => $item['total'],
+							'subtotal'     => $item['subtotal'],
+						)
+					);
+					if(!$line_item_id){
 						continue;
 					}
-					$product = $line_item->get_product();
-					if(!$product){
-						continue;
-					}
-					if(!array_key_exists( $product->get_id(), $existing_delegates)){
-						continue;
-					}
-					$new_delegates_number = $line_item->get_quantity();
-					// if delegates are removed
-					if(count($existing_delegates[$product->get_id()]) <= $new_delegates_number ){
-						continue;
-					}
-					$deleted_delegates = array_slice($existing_delegates[$product->get_id()], $new_delegates_number);
+					$line_item = $order->get_item( $line_item_id );
 
-					foreach ($deleted_delegates as $delegate_id){
-						delete_user_meta($delegate_id, 'tbs_course_dates', $product->get_id());
+					if($delegates != $delegates_qty){
+						$line_item->set_quantity($delegates);
+						$line_item->save();
 					}
+					// Update delegate stock
+					$this->change_wc_product_stock($order, $course_date->get_woo_porduct(), 0, $delegates);
 				}
+				$course_date->reload();
+				$item_data = $course_date->get_json_model();
+				$item_data['delegates'] = $delegates;
+				$item_data['itemID'] = $line_item_id;
+				$item_data['subtotal'] = (float)$line_item->get_subtotal();
+				$item_data['total'] = (float)$line_item->get_total();
+				$prepeared_items[] = $item_data;
 			}
-		}
-		// Remove courses from delegates account for completed booking
-		if($data_entry_complete && 'completed' != $order_status && count($line_items_to_delete) > 0){
-			$existing_delegates = get_post_meta($order_id, 'delegates', true);
-			if($existing_delegates){
-				$deleted_delegates = array();
-				foreach($line_items_to_delete as $order_line_item_id){
-					$line_item = WC_Order_Factory::get_order_item( $order_line_item_id );
-					if(!$line_item){
-						continue;
-					}
-					$product = $line_item->get_product();
-					if(!$product){
-						continue;
-					}
-					if(!array_key_exists( $product->get_id(), $existing_delegates)){
-						continue;
-					}
-					foreach ($existing_delegates[$product->get_id()] as $delegate_id){
-						delete_user_meta($delegate_id, 'tbs_course_dates', $product->get_id());
-					}
+			// Delete items that are removed from edit area
+			$line_items_to_delete = array_diff( $order_items,  $line_items_updated );
+			foreach($line_items_to_delete as $order_line_item_id){
+				$line_item = WC_Order_Factory::get_order_item( $order_line_item_id );
+				if($line_item){
+					$old_delegates_number = $line_item->get_quantity();
+					$this->change_wc_product_stock($order, $line_item->get_product(), $old_delegates_number, 0);
 				}
+				$order->remove_item($order_line_item_id);
+				wc_delete_order_item( absint( $order_line_item_id ) );
 			}
-		}
-		
-		foreach($line_items_to_delete as $order_line_item_id){
-			$line_item = WC_Order_Factory::get_order_item( $order_line_item_id );
-			if($line_item){
-				$old_delegates_number = $line_item->get_quantity();
-				$this->change_wc_product_stock($order, $line_item->get_product(), $old_delegates_number, 0);
-			}
-			$order->remove_item($order_line_item_id);
-			wc_delete_order_item( absint( $order_line_item_id ) );
 		}
 		
 		// Do calculations
@@ -905,48 +811,44 @@ class TBS_Admin_Manual_Bookings {
 					'Name' => $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(),
 				);
 			}
-			if('completed' == $order_status){
-				delete_post_meta($order_id, 'tbs_draft_delegates_data');
-				$order_delegates = array();
+			delete_post_meta($order_id, 'tbs_draft_delegates_data');
+			$order_delegates = array();
 
-				$serial_no = 0;
-				foreach($delegates_posted_data as $delegate_data){
-					$serial_no++;
-					$empty_email = false;
-					if(empty($delegate_data['email'])){
-						if(!empty($delegate_data['userID'])){
-							$dwpu = get_userdata($delegate_data['userID']);
-							$delegate_data['email'] = $dwpu->user_email;
-						}else{
-							$delegate_data['email'] = random_uqniq_user_email();
-						}
-						$empty_email = true;
+			$serial_no = 0;
+			foreach($delegates_posted_data as $delegate_data){
+				$serial_no++;
+				$empty_email = false;
+				if(empty($delegate_data['email'])){
+					if(!empty($delegate_data['userID'])){
+						$dwpu = get_userdata($delegate_data['userID']);
+						$delegate_data['email'] = $dwpu->user_email;
+					}else{
+						$delegate_data['email'] = random_uqniq_user_email();
 					}
-					$delegate = new TBS_Delegate($delegate_data['email']);
-					$delegate->set_first_name($delegate_data['first_name']);
-					$delegate->set_last_name($delegate_data['last_name']);
-					$delegate->set_notes($delegate_data['notes']);
-					$delegate->add_course($delegate_data['courseID']);
-					$delegate->add_course_date($delegate_data['courseDateID']);
-					$delegate->add_customer($order->get_customer_id());
-					if($empty_email){
-						$delegate->set_empty_email();
-					}
-					$delegate->save();
-					if($delegate->exists()){
-						$order_delegates[$delegate_data['courseDateID']][] = $delegate->get_id();
-					}
-					if($is_optin && !$empty_email){
-						$camp_monitor_subscribers[] = array(
-							'EmailAddress' => $delegate->get_email(),
-							'Name' => $delegate->get_full_name(),
-						);
-					}
+					$empty_email = true;
 				}
-				update_post_meta($order->get_id(), 'delegates', $order_delegates);
-			}else{
-				update_post_meta($order_id, 'tbs_draft_delegates_data', $delegates_posted_data);
+				$delegate = new TBS_Delegate($delegate_data['email']);
+				$delegate->set_first_name($delegate_data['first_name']);
+				$delegate->set_last_name($delegate_data['last_name']);
+				$delegate->set_notes($delegate_data['notes']);
+				$delegate->add_course($delegate_data['courseID']);
+				$delegate->add_course_date($delegate_data['courseDateID']);
+				$delegate->add_customer($order->get_customer_id());
+				if($empty_email){
+					$delegate->set_empty_email();
+				}
+				$delegate->save();
+				if($delegate->exists()){
+					$order_delegates[$delegate_data['courseDateID']][] = $delegate->get_id();
+				}
+				if($is_optin && !$empty_email){
+					$camp_monitor_subscribers[] = array(
+						'EmailAddress' => $delegate->get_email(),
+						'Name' => $delegate->get_full_name(),
+					);
+				}
 			}
+			update_post_meta($order->get_id(), 'delegates', $order_delegates);
 		
 			// Initiate Campaign monitor API
 			if( $is_optin && count($camp_monitor_subscribers ) > 0){
@@ -958,7 +860,7 @@ class TBS_Admin_Manual_Bookings {
 		
 		
 		// Se order status
-		if('tbs-draft' == $order->get_status() && 'completed' == $order_status){
+		if($data_entry_complete && 'tbs-draft' == $order->get_status()){
 			// Mimic order pending to work wc new order emails
 			$order->set_status( 'pending', '', true );
 			$order->save();
@@ -1076,12 +978,11 @@ class TBS_Admin_Manual_Bookings {
 				'html' => 'You can not edit non manual orders!',
 			));
 		}
-		$data_entry_complete = (bool)$order->get_meta('tbs_data_entry_complete', true);
+		$data_entry_complete = 'completed' == $order->get_status();
 		$online_form_key = $order->get_meta( '_tbs_online_form_id', true);
 		$booking_data = array(
 			'id' => $order_id,
 			'status' => $order->get_status(),
-			'dataEntryComplete' => $data_entry_complete,
 			'emailOptin' => (bool)$order->get_meta( 'tbs_email_optin', true),
 			'suppressOrderEmails' => (bool)$order->get_meta( 'tbs_suppress_order_emails', true),
 			'onlineFormUrl' => '',
@@ -1134,7 +1035,7 @@ class TBS_Admin_Manual_Bookings {
 		
 		// Get Delegates
 		$delegates_data = array();
-		if($data_entry_complete && 'completed' == $order->get_status()){
+		if($data_entry_complete){
 			$order_delegates_ids = get_post_meta($order->get_id(), 'delegates', true);
 
 			if( !is_array( $order_delegates_ids ) || 0 === count($order_delegates_ids)){

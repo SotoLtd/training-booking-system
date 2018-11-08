@@ -12,7 +12,6 @@
         defaults: {
             id: 0,
             status: "tbs-draft",
-            dataEntryComplete: false,
             emailOptin: false,
             suppressOrderEmails: false,
             onlineFormUrl: "",
@@ -28,7 +27,7 @@
             if( tbsBookings.delegateListContainerView.validateEmails() ){
                 failed = true;
             }
-            if(!this.get("dataEntryComplete") ){
+            if("completed" !== this.get("status") ){
                 this.set("saveData", !failed);
                 return;
             }
@@ -70,8 +69,7 @@
             });
         },
         saveData: function(){
-            this.set("status", tbsBookings.Storage.general.get("status"));
-            this.set("dataEntryComplete", tbsBookings.Storage.general.get("dataEntryComplete"));
+            this.set("status", tbsBookings.Storage.general.get("status"),{silent: true});
             this.set("emailOptin", tbsBookings.Storage.general.get("emailOptin"));
             this.set("suppressOrderEmails", tbsBookings.Storage.general.get("suppressOrderEmails"));
             this.set("delegates", tbsBookings.delegateListContainerView.getDelegates());
@@ -100,7 +98,6 @@
                     _tbsnonce: TBS_Booking_Settings.saveNonce,
                     order_id: model.get("id"),
                     status: model.get("status"),
-                    data_entry_complete: model.get("dataEntryComplete"),
                     email_optin: model.get("emailOptin"),
                     suppress_order_emails: model.get("suppressOrderEmails"),
                     customer_data: model.get("address"),
@@ -150,7 +147,6 @@
     tbsBookings.Models.General = Backbone.Model.extend({
         defaults: {
             "status": "tbs-draft",
-            "dataEntryComplete": false,
             "emailOptin": false,
             "suppressOrderEmails": false,
             "onlineFormUrl": ""
@@ -324,7 +320,6 @@
         el: $("#tbs-general-settings"),
         events: {
             "change #booking-status": "updateStatus",
-            "click #data-entry-complete": "updateDataEntryComplete",
             "click #email-optin": "updateEmailOptin",
             "click #suppress-order-emails": "updateSuppressOrderEmails",
             "click #copytoclipboard-online-form-url": "copyUrltoClipBoard",
@@ -332,7 +327,6 @@
         },
         initialize: function(){
             this.listenTo(tbsBookings.Storage.booking, "change:status", this.renderStatus);
-            this.listenTo(tbsBookings.Storage.booking, "change:dataEntryComplete", this.renderDataEntryComplete);
             this.listenTo(tbsBookings.Storage.booking, "change:emailOptin", this.renderEmailOptin);
             this.listenTo(tbsBookings.Storage.booking, "change:suppressOrderEmails", this.renderSuppressOrderEmails);
             this.listenTo(tbsBookings.Storage.booking, "change:onlineFormUrl", this.renderOnlineFormUrl);
@@ -340,49 +334,37 @@
         },
         render: function(){
             this.$("#booking-status").val(this.model.get("status"));
-            this.$("#data-entry-complete").prop("checked", this.model.get("dataEntryComplete"));
             this.$("#email-optin").prop("checked", this.model.get("emailOptin"));
             this.$("#suppress-order-emails").prop("checked", this.model.get("suppressOrderEmails"));
         },
         renderStatus: function(booking, val){
             this.$("#booking-status").val(val);
-            this.model.set("status", val, {silent: true});
-        },
-        renderDataEntryComplete: function(booking, val){
-            this.$("#data-entry-complete").prop("checked", val);
-            this.model.set("dataEntryComplete", val, {silent: true});
+            this.model.set("status", val);
         },
         renderEmailOptin: function(booking, val){
            this.$("#email-optin").prop("checked", val);
-           this.model.set("emailOptin", val, {silent: true});
+           this.model.set("emailOptin", val);
         },
         renderSuppressOrderEmails: function(booking, val){
            this.$("#suppress-order-emails").prop("checked", val);
-           this.model.set("suppressOrderEmails", val, {silent: true});
+           this.model.set("suppressOrderEmails", val);
         },
         renderOnlineFormUrl: function(booking, val){
            this.$("#online-form-url").val(val).attr("placeholder", "Generate url");
-           this.model.set("onlineFormUrl", val, {silent: true});
+           this.model.set("onlineFormUrl", val);
         },
         updateStatus: function(e){
-            this.model.set("status", this.$("#booking-status").val(), {silent: true});
-        },
-        updateDataEntryComplete: function(e){
-            this.model.set("dataEntryComplete", this.$("#data-entry-complete").is(":checked"), {silent: true});
-            
-            if(this.$("#data-entry-complete").is(":checked")){
-                this.$("#email-optin").prop("checked", true);
-                this.model.set("emailOptin", true, {silent: true});
-            }else{
-                this.$("#booking-status").val("tbs-draft");
-                this.model.set("status", "tbs-draft", {silent: true});
+            this.model.set("status", this.$("#booking-status").val());
+            if(this.$("#booking-status").val() === "completed"){
+                 this.$("#email-optin").prop("checked", true);
+                this.model.set("emailOptin", true);
             }
         },
         updateEmailOptin: function(e){
-            this.model.set("emailOptin", this.$("#email-optin").is(":checked"), {silent: true});
+            this.model.set("emailOptin", this.$("#email-optin").is(":checked"));
         },
         updateSuppressOrderEmails: function(e){
-           this.model.set("suppressOrderEmails", this.$("#suppress-order-emails").is(":checked"), {silent: true});
+           this.model.set("suppressOrderEmails", this.$("#suppress-order-emails").is(":checked"));
         },
         copyUrltoClipBoard: function(e){
            var copyText = this.$("#online-form-url");
@@ -609,7 +591,6 @@
                     emails[key].push($this);
                 }
             });
-            console.log(emails);
             _.each(emails, function($fields){
                 if($fields.length < 2){
                     _.each($fields, function($field){
@@ -690,8 +671,16 @@
             this.listenTo(this.collection, "reset", this.render);
             // Listen to booking items change
             this.listenTo(tbsBookings.Storage.booking, "change:items", this.updateList);
+            this.listenTo(tbsBookings.Storage.booking, "change:status", this.updateButtonsVisisblity);
             // Render inital items
             this.render();
+        },
+        updateButtonsVisisblity: function(general, val){
+            if("completed" === val){
+                this.$el.addClass("disable-completed-buttons");
+            }else{
+                this.$el.removeClass("disable-completed-buttons");
+            }
         },
         render: function(){
             // Empth the element first
@@ -722,6 +711,17 @@
             "click .booking-recalculate": "recalCulate",
             "click .booking-save": "saveBooking",
         },
+        initialize: function() {
+            this.listenTo(tbsBookings.Storage.booking, "change:status", this.updateButtonsVisisblity);
+            
+        },
+        updateButtonsVisisblity: function(general, val){
+            if("completed" === val){
+                this.$el.addClass("disable-completed-buttons");
+            }else{
+                this.$el.removeClass("disable-completed-buttons");
+            }
+        },
         openModal: function(e){
             e.preventDefault();
             // Open modal
@@ -744,7 +744,6 @@
                     };
                 });
             bookingData.order_id = tbsBookings.Storage.booking.get("id");
-            bookingData.data_entry_complete = tbsBookings.Storage.booking.get("dataEntryComplete");
             
             bookingData.city = tbsBookings.Storage.address.get("city");
             bookingData.postcode = tbsBookings.Storage.address.get("postcode");
@@ -802,7 +801,6 @@
             var item = tbsBookings.Storage.items.findWhere({"id": this.model.get("id")});
             if(!item){
                 var itemData = this.model.toJSON();
-                console.log(itemData);
                 item = new tbsBookings.Models.Item( itemData );
             }
             item.addDelegates(delegates);

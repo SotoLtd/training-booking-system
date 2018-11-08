@@ -27,10 +27,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</select>
 			</div>
 			<div class="tbs-general-data-col  booking-data-entry-complete">
-				<label>Data entry complete: </label>
-				<input id="data-entry-complete" type="checkbox" value="1" />
-			</div>
-			<div class="tbs-general-data-col  booking-data-entry-complete">
 				<label>Campaign Monitor optin: </label>
 				<input id="email-optin" type="checkbox" value="1" />
 			</div>

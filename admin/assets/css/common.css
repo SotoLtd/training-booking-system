@@ -462,6 +462,10 @@
 #tbs-booking-courses-table td.tbs-booking-item-actions {
     width: 60px;
 }
+#tbs-booking-courses-table .disable-completed-buttons td.tbs-booking-item-actions {
+    visibility: hidden;
+    opacity: 0;
+}
 .tbs-booking-item-actions .button {
     display: inline-block;
     padding: 0 5px;
@@ -527,6 +531,11 @@
 #tbs-booking-course-buttons .booking-recalculate {
     float: right;
     margin-right: 0;
+}
+#tbs-booking-course-buttons.disable-completed-buttons .booking-add-course-date,
+#tbs-booking-course-buttons.disable-completed-buttons .booking-recalculate {
+    visibility: hidden;
+    opacity: 0;
 }
 #tbs-modal-courses {
     border: 1px solid #dfdfdf;

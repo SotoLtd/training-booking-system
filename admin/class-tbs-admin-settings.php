@@ -154,6 +154,12 @@ class TBS_Admin_Settings {
 					'label' => __('New Customer Form Email'),
 					'description' => __('New customer from email address.', TBS_i18n::get_domain_name()),
 				),
+				array(
+					'id' => 'joining_instruction_form_email',
+					'type' => 'text',
+					'label' => __('Joining Instruction Form Email'),
+					'description' => __('Joining instruction from email address.', TBS_i18n::get_domain_name()),
+				),
 			),
 		);
 		

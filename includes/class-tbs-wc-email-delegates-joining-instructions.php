@@ -126,6 +126,22 @@ class TBS_WC_Email_Delegates_Joining_Instructions extends WC_Email {
 	}
 
 	/**
+	 * Get the from address for outgoing emails.
+	 *
+	 * @return string
+	 */
+	public function get_from_address() {
+		$email = trim(tbs_get_settings('joining_instruction_form_email', ''));
+		if($email){
+			$from_address = $email;
+		}else{
+			$from_address = apply_filters( 'woocommerce_email_from_address', get_option( 'woocommerce_email_from_address' ), $this );
+		}
+		
+		return sanitize_email( $from_address );
+	}
+
+	/**
 	 * Get email subject.
 	 *
 	 * @since  3.1.0

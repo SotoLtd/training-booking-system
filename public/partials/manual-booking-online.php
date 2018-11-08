@@ -21,7 +21,7 @@ if(isset($_GET['show_pdf_html'])){
 				<?php
 				if(!$booking){
 					echo '<div class="tbs-mbf-messages woocommerce-error">No booking found!</div>';
-				}elseif($booking->get_meta('tbs_data_entry_complete', true)){
+				}elseif('completed' == $booking->get_status()){
 					echo '<div class="tbs-mbf-messages woocommerce-error">Not allowed to edit!</div>';
 				}else{
 					tbs_get_template_part('forms/manual-booking', true, array('order' => $booking));

@@ -544,7 +544,7 @@ class TBS_Admin_Bookings {
 		// Get order status
 		$order_status = isset($_POST['status']) && wc_is_order_status('wc-'.$_POST['status']) ? $_POST['status'] : 'tbs-draft';
 		$is_draft = 'tbs-draft' == $order_status;
-		$data_entry_complete = tbs_arr_get( 'data_entry_complete', $_POST );
+		$data_entry_complete = 'completed' == $order_status;
 		$suppress_order_emails = tbs_arr_get( 'suppress_order_emails', $_POST, false );
 		
 		if(!$data_entry_complete || $suppress_order_emails){
@@ -911,11 +911,10 @@ class TBS_Admin_Bookings {
 				'html' => 'You can not edit non manual orders!',
 			));
 		}
-		$data_entry_complete = (bool)$order->get_meta('tbs_data_entry_complete', true);
+		$data_entry_complete = "completed" == $order->get_status();
 		$booking_data = array(
 			'id' => $order_id,
 			'status' => $order->get_status(),
-			'dataEntryComplete' => $data_entry_complete,
 			'emailOptin' => (bool)$order->get_meta( 'tbs_email_optin', true),
 			'suppressOrderEmails' => (bool)$order->get_meta( 'tbs_suppress_order_emails', true),
 		);

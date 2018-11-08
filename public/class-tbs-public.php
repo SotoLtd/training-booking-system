@@ -1281,7 +1281,7 @@ class TBS_Public {
 			exit();
 		}
 		
-		$data_entry_complete = (bool)$order->get_meta('tbs_data_entry_complete', true);
+		$data_entry_complete = 'completed' == $order->get_status();
 		
 		if($data_entry_complete){
 			wp_redirect(add_query_arg(array('booking_manual_key' => $online_form_key, 'status' => 'completed'), site_url()));

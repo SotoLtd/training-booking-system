@@ -168,7 +168,7 @@ if($msg){
 	</div>
 
 	<?php  
-	$data_entry_complete = (bool)$order->get_meta('tbs_data_entry_complete', true);
+	$data_entry_complete = 'completed' == $order->get_status();
 	// Get Delegates
 	$course_delegates_data = array();
 	if(!$data_entry_complete){
