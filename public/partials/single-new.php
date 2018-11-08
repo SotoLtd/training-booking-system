@@ -38,7 +38,13 @@ $course_page_nottice = isset($course_settings['course_page_nottice'])?$course_se
                             <?php } ?>
                             <?php if($the_course->price){ ?>
                             <div class="course-sbelement course-price">
-                                <h4><?php echo $the_course->price_formatted(); ?></h4>
+                                <h4>
+									<?php 
+									add_filter('woocommerce_price_trim_zeros', '__return_true');
+									echo $the_course->price_formatted(); 
+									remove_filter('woocommerce_price_trim_zeros', '__return_true');
+									?>
+								</h4>
                                 <?php if($the_course->price_includes){ ?>
                                 <div class="course-sbelement-content course-includes">
                                     <h5>Includes:</h5>
