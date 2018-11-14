@@ -270,8 +270,10 @@ function tbs_grouped_courses_dropdown($options = array()){
 	if ( !$course_cats || is_wp_error( $course_cats ) ) {
 		return '';
 	}
+	$course_cats_id = array();
 	$html = '';
 	foreach($course_cats as $cat_id=>$cat_name){
+		$course_cats_id[] = $cat_id;
 		$category_courses = get_posts(array(
 			'posts_per_page'=> -1,
 			'post_type'     => $course_type_name,
@@ -293,6 +295,30 @@ function tbs_grouped_courses_dropdown($options = array()){
 			$html .= '<option value="'. $course->ID .'">'. $course->post_title .'</option>';
 		}
 		$html .= ' </optgroup>';
+	}
+	if( count( $course_cats_id )> 0){
+		$no_category_courses = get_posts(array(
+			'posts_per_page'=> -1,
+			'post_type'     => $course_type_name,
+			'orderby'       => 'title',
+			'order'         => 'ASC',
+			'tax_query'     => array(
+				array(
+					'taxonomy'  => $course_taxonomy_name,
+					'field'     => 'id',
+					'terms'     => $course_cats_id,
+					'operator'  => 'NOT IN'
+				)
+			)
+		));
+		if($no_category_courses) {
+			$html .= '<optgroup label="Other Courses">';
+			foreach($no_category_courses as $nc_course){
+				$html .= '<option value="'. $nc_course->ID .'">'. $nc_course->post_title .'</option>';
+			}
+			$html .= ' </optgroup>';
+		}
+		
 	}
 	if(!$html && !$first_option){
 		return '';
