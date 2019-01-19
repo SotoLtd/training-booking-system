@@ -857,8 +857,8 @@ class TBS_Admin_Manual_Bookings {
 		}else{
 			update_post_meta($order_id, 'tbs_draft_delegates_data', $delegates_posted_data);
 		}
-		
-		
+
+		add_filter('woocommerce_payment_complete_reduce_order_stock', '__return_false', 100);
 		// Se order status
 		if($data_entry_complete && 'tbs-draft' == $order->get_status()){
 			// Mimic order pending to work wc new order emails
@@ -868,6 +868,7 @@ class TBS_Admin_Manual_Bookings {
 		$order->set_status( wc_clean( $order_status ), '', true );
 		// Save order
 		$order->save();
+		remove_filter('woocommerce_payment_complete_reduce_order_stock', '__return_false', 100);
 		
 		$response = array();
 		$response['status'] = 'OK';
