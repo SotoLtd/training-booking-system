@@ -17,6 +17,7 @@ class TBS_Course_Date {
 	protected $custom_location;
 	protected $joining_instruction;
 	protected $map;
+	protected $extra_data = array();
 
 
 
@@ -358,6 +359,15 @@ class TBS_Course_Date {
 		$bookings_ids = $wpdb->get_col($wpdb->prepare($sql, $this->id));
 		$bookings_ids = array_map('absint', $bookings_ids);
 		return $bookings_ids;
+	}
+	public function set_extra_data($key, $value) {
+		$this->extra_data[$key] = $value;
+	}
+	public function get_extra_data($key){
+		if(isset($this->extra_data[$key])){
+			return $this->extra_data[$key];
+		}
+		return '';
 	}
 	public function get_edit_form_data(){
 		$data = array(

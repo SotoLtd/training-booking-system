@@ -131,6 +131,7 @@ class TBS_Course_Date_Info_List_Table extends WP_List_Table {
 			'reserves' => __("Reserves", TBS_i18n::get_domain_name()),
 			'remaining_places' => __("Remaining Places", TBS_i18n::get_domain_name()),
 			'capacity' => __("Capacity", TBS_i18n::get_domain_name()),
+			'fix_available_places' => '&nbsp;',
 		);
 	}
 	/**
@@ -146,7 +147,7 @@ class TBS_Course_Date_Info_List_Table extends WP_List_Table {
 		echo $this->row_actions( $actions );
 	}
 	function column_reserves ($course_date) {
-		$reserves_count = $course_date->get_reserves_count();
+		$reserves_count = $course_date->get_extra_data('reserves');
 		echo $reserves_count ? $reserves_count : '-';
 	}
 	/**
@@ -164,16 +165,29 @@ class TBS_Course_Date_Info_List_Table extends WP_List_Table {
 			case 'trainer':
 				return $course_date->get_trainers_name();
 			case 'delegates_count':
-				return $course_date->get_delegates_count();
+				return $course_date->get_extra_data('delegates_count');
 			case 'remaining_places':
-				return $course_date->get_places();
+				return $course_date->get_extra_data('remaining_places');
 			case 'capacity':
-				return $course_date->get_max_delegates();
-			default: 
+				return $course_date->get_extra_data('capacity');
+            case 'fix_available_places':
+				return $this->fix_available_places_button($course_date);
+			default:
 				return is_callable(array($course_date, 'get_' . $column_name)) ? $course_date->{"get_$column_name"}() : '';
 				
 		}
 	}
+
+	public function fix_available_places_button($course_date) {
+	    $delegates_count = $course_date->get_extra_data('delegates_count');
+	    $reserves = $course_date->get_extra_data('reserves');
+	    $remaining_places = $course_date->get_extra_data('remaining_places');
+		$capacity = $course_date->get_extra_data('capacity');
+		if($capacity === ($delegates_count + $reserves + $remaining_places)){
+		    return '';
+        }
+		return '<a class="button button-primary tts-cdi-fix-stock" href="#" data-cdid="'.$course_date->get_id().'" data-nonce="'. wp_create_nonce('tts-fix-stock-' . $course_date->get_id()) .'">Fix Available Places</a>';
+    }
 
 	/**
 	 * Columns to make sortable.
@@ -367,7 +381,12 @@ class TBS_Course_Date_Info_List_Table extends WP_List_Table {
 		$course_dates = array();
 		while($date_query->have_posts()){
 			$date_query->the_post();
-			$course_dates[] = new TBS_Course_Date( get_the_ID());
+			$course_date = new TBS_Course_Date( get_the_ID());
+			$course_date->set_extra_data('delegates_count', $course_date->get_delegates_count());
+			$course_date->set_extra_data('reserves', $course_date->get_reserves_count());
+			$course_date->set_extra_data('remaining_places', $course_date->get_places());
+			$course_date->set_extra_data('capacity', $course_date->get_max_delegates());
+			$course_dates[] = $course_date;
 		}
 		wp_reset_postdata();
 		return $course_dates;

@@ -41,8 +41,11 @@ class TBS_Admin_Course_Date_Info {
 	public function enqueue_scripts(){
 		wp_enqueue_script( 'jquery' );
 		wp_enqueue_script( 'air-datepicker', $this->admin->get_assets_url('library/air-datepicker/js/datepicker.min.js'), array('jquery'), $this->admin->get_plugin_version(), true );
-		wp_enqueue_script( 'air-datepicker-i18n-en', $this->admin->get_assets_url('library/air-datepicker/js/i18n/datepicker.en.js'), array('jquery'), $this->admin->get_plugin_version(), true );
-
+		wp_enqueue_script( 'air-datepicker-en', $this->admin->get_assets_url('library/air-datepicker/js/i18n/datepicker.en.js'), array('jquery', 'air-datepicker'), $this->admin->get_plugin_version(), true );
+		wp_enqueue_script( 'tts-cdilist', $this->admin->get_assets_url('js/course-date-info-list.js'), array('jquery'), $this->admin->get_plugin_version(), true );
+		$s_data			 = array();
+		$s_data['ajaxUrl']	 = admin_url( '/admin-ajax.php' );
+		wp_localize_script( 'tts-cdilist', 'WPTBS_CDI', $s_data );
 	}
 	/**
 	 * Set List table for booking
@@ -72,6 +75,44 @@ class TBS_Admin_Course_Date_Info {
 		require_once $class_file_name;
 		$this->list_table = new $class_name;
 		return true;
+	}
+
+	public function ajax_fix_course_date_stock() {
+		$course_id = tbs_arr_get('course_id', $_POST,  0);
+		if(!$course_id){
+			wp_send_json(array(
+				'status' => 'NOTOK',
+				'html' => 'Invalid course ID!',
+			));
+		}
+		$course_date = new TBS_Course_Date($course_id);
+		if(!$course_date->exists()){
+			wp_send_json(array(
+				'status' => 'NOTOK',
+				'html' => 'course does not exist!',
+			));
+		}
+		check_admin_referer('tts-fix-stock-' . $course_date->get_id(), '_tbsnonce');
+		if(!current_user_can('manage_bookings')){
+			wp_die( "You don't have sufficient permission.", __( 'WordPress Failure Notice' ), 403 );
+		}
+		$delegates_count = $course_date->get_delegates_count();
+		$reserves = $course_date->get_reserves_count();
+		$capacity = $course_date->get_max_delegates();
+		$remaining_places = $capacity - $delegates_count - $reserves;
+
+		$remaining_places = max(0, $remaining_places);
+		$course_date->get_woo_porduct()->set_stock_quantity( wc_stock_amount($remaining_places) );
+		if(!$course_date->get_woo_porduct()->save()){
+			wp_send_json(array(
+				'status' => 'NOTOK',
+				'html' => 'Failed!',
+			));
+		}
+		wp_send_json(array(
+			'status' => 'OK',
+			'remaining_places' => $remaining_places,
+		));
 	}
 	
 	

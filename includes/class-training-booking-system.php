@@ -258,6 +258,8 @@ class Training_Booking_System {
         $this->loader->add_action('personal_options', $plugin_admin, 'display_user_extra_fields');
         $this->loader->add_action('personal_options_update', $plugin_admin, 'save_user_extra_fields');
         $this->loader->add_action('edit_user_profile_update', $plugin_admin, 'save_user_extra_fields');
+
+		$this->loader->add_action('wp_ajax_tbs_fix_cd_stock', $plugin_admin->get_course_date_info_handler(), 'ajax_fix_course_date_stock');
 	}
 
 	/**
