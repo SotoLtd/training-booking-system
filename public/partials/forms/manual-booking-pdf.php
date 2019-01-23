@@ -487,7 +487,10 @@ $order_id = $order->get_id();
 								<td><?php echo esc_html($fields_value['named_contact_phone']);?></td>
 							</tr>
 							<tr>
-								<th>Will there be parking available?</th>
+								<th>
+                                    Will there be parking available?
+                                    <p style="margin: 6px 0 0;"><strong>*Please note that if parking is not available, any costs the trainer may receive due to parking will be invoiced to you following the courses completion.</strong></p>
+                                </th>
 								<td>
 									<input type="checkbox" <?php checked('yes', $fields_value['parking_available']); ?>/>
 								</td>

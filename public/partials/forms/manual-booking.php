@@ -282,6 +282,7 @@ if($msg){
 						<tr>
 							<th>
 								<label for="od_parking_available_<?php echo $course_date->get_id(); ?>">Will there be parking available?  </label>
+                                <p style="margin: 6px 0 0;"><strong>*Please note that if parking is not available, any costs the trainer may receive due to parking will be invoiced to you following the courses completion.</strong></p>
 							</th>
 							<td>
 								<input type="checkbox" id="od_parking_available_<?php echo $course_date->get_id(); ?>" name="<?php echo $field_name_base; ?>[parking_available]" value="yes" <?php checked('yes', $fields_value['parking_available']); ?>/>
