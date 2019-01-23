@@ -424,7 +424,7 @@ class TBS_Course_Date_Info_List_Table extends WP_List_Table {
 			$this->courses_dropdown();
 			$this->location_dropdown();
 			$this->trainer_dropdown();
-			//$this->months_dropdown();
+			$this->months_dropdown();
 			$this->date_selector();
 			$output = ob_get_clean();
 
