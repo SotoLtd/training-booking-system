@@ -572,7 +572,14 @@ $order_id = $order->get_id();
 				<li><strong>Internet Banking</strong> – Please make your payment to “The Training Societi Ltd” Sort Code: 08 92 50 Account Number: 68293765. Please put your Invoice Number as your reference.</li>
 			</ul>
 			</li>
-				<li><strong>Once this is paid we will send you confirmation and joining instructions.</strong></li>
+                <li>
+                    <table>
+                        <tr>
+                            <td style="width: 55%;"><strong>Once this is paid we will send you confirmation and joining instructions.</strong></td>
+                            <td style="padding-left: 20px;"><strong>Please ensure you check your Junk/ Spam folder if you do not receive your joining instructions as they can filter into these folders.</strong></td>
+                        </tr>
+                    </table>
+                </li>
 			</ol>
 			<p>For credit account customers we will send your invoice (payable within 30 days), joining instruction on completion and return of the booking form.</p>
 		</div>
