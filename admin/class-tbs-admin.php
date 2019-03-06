@@ -40,10 +40,7 @@ class TBS_Admin {
 	private $settings_handler;
 	private $customers_hander;
 	private $reports_handler;
-
-
-
-
+	private $tools_handler;
 
 	/**
 	 * Initialize the class and set its properties.
@@ -66,6 +63,7 @@ class TBS_Admin {
 		$this->reports_handler = new TBS_Admin_Reports($this);
 		$this->settings_handler = new TBS_Admin_Settings($this);
 		$this->wc_coupon_handler = new TBS_Admin_WC_Coupon($this);
+		$this->tools_handler = new TBS_Admin_Tools($this);
 
 	}
 	/**
@@ -127,6 +125,16 @@ class TBS_Admin {
 			$this->reports_handler = new TBS_Admin_Reports($this);
 		}
 		return $this->reports_handler;
+	}
+	/**
+	 * Get Reports Handler object
+	 * @return obj
+	 */
+	public function get_tools_hander(){
+		if( !is_a( $this->tools_handler, 'TBS_Admin_Tools' )){
+			$this->tools_handler = new TBS_Admin_Tools($this);
+		}
+		return $this->tools_handler;
 	}
 	/**
 	 * Get Settings Handler object
@@ -246,6 +254,20 @@ class TBS_Admin {
 		}
 		return false;
 	}
+	/**
+	 * Check if current screen for reports and its sub menu pages
+	 * @return boolean
+	 */
+	public function is_tools_screen(){
+		$curent_screen = get_current_screen();
+		$screens_ids = array(
+			'booking-system_page_tbs-tools',
+		);
+		if(in_array($curent_screen->id, $screens_ids)){
+			return true;
+		}
+		return false;
+	}
 
 	/**
 	 * Register the stylesheets for the admin area.
@@ -278,6 +300,9 @@ class TBS_Admin {
 		
 		if($this->is_reports_screen()){
 			$this->reports_handler->enqueue_styles();
+		}
+		if($this->is_tools_screen()){
+			$this->tools_handler->enqueue_styles();
 		}
 	}
 
@@ -334,6 +359,9 @@ class TBS_Admin {
 		}
 		if($this->is_reports_screen()){
 			$this->reports_handler->enqueue_scripts();
+		}
+		if($this->is_tools_screen()){
+			$this->tools_handler->enqueue_scripts();
 		}
 	}
 	/**
@@ -428,6 +456,7 @@ class TBS_Admin {
 		$this->course_handler->add_course_page();
 		$this->customers_hander->add_customers_page();
 		$this->reports_handler->add_reports_page();
+		$this->tools_handler->add_tools_page();
 		$this->settings_handler->add_settings_page();
 	}
 	

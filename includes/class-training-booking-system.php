@@ -142,6 +142,11 @@ class Training_Booking_System {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-tbs-trainers-report.php';
 
 		/**
+		 * CRM control
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-tbs-wc-crm.php';
+
+		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/admin-functions.php';
@@ -152,6 +157,7 @@ class Training_Booking_System {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-tbs-admin-customers.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-tbs-admin-reports.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-tbs-admin-settings.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-tbs-admin-tools.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-tbs-admin-wc-coupon.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-tbs-admin.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-tbs-course-meta-fields.php';

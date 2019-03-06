@@ -881,6 +881,7 @@ class TBS_Public {
 			}
 		}
 		update_post_meta($order_id, 'delegates', $order_delegates);
+		do_action('tbh_wc_crm_booking_update_delegates', $order_id);
 	}
 	
 	public function wc_manage_order_delegates_on_status_change($order_id, $status_from, $status_to, $order){
