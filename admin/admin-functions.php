@@ -341,6 +341,7 @@ function tbs_grouped_courses_dropdown($options = array()){
 
 function tbs_admin_create_customer($data = array()){
 	$data = wp_parse_args($data, array(
+		'existing_customer_ID' => false,
 		'first_name' => '',
 		'last_name' => '',
 		'company' => '',
@@ -352,7 +353,12 @@ function tbs_admin_create_customer($data = array()){
 		'email' => '',
 		'phone' => '',
 	));
-	$userdata = WP_User::get_data_by('email', $data['email']);
+	if($data['existing_customer_ID']){
+		$userdata = WP_User::get_data_by('id', $data['existing_customer_ID']);
+	}else{
+		$userdata = WP_User::get_data_by('email', $data['email']);
+	}
+
 	if(!$userdata){
 		// User does not exist
 		// Create a new customer
@@ -366,6 +372,12 @@ function tbs_admin_create_customer($data = array()){
 	}
 	// Save customer data
 	$customer = new WC_Customer( $customer_id );
+
+	if($data['existing_customer_ID'] && ($data['email'] != $customer->get_email()) ){
+		$customer->set_email($data['email']);
+		$customer->set_username($data['email']);
+	}
+
 	if ( ! empty( $data['first_name'] ) ) {
 			$customer->set_first_name( $data['first_name'] );
 	}
@@ -374,10 +386,8 @@ function tbs_admin_create_customer($data = array()){
 		$customer->set_last_name( $data['last_name'] );
 	}
 
-	// If the display name is an email, update to the user's full name.
-	if ( is_email( $customer->get_display_name() ) ) {
-		$customer->set_display_name( $data['first_name'] . ' ' . $data['last_name'] );
-	}
+	$customer->set_display_name( $data['first_name'] . ' ' . $data['last_name'] );
+	update_user_meta($customer_id, 'nickname', $data['first_name'] . ' ' . $data['last_name'] );
 
 	foreach ( $data as $key => $value ) {
 		// Store custom fields prefixed with billing_.

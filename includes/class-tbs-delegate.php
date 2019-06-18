@@ -89,7 +89,7 @@ class TBS_Delegate {
 		$companies = array();
 		foreach($this->customers as $customer_id){
 			$customer_company = get_user_meta($customer_id, 'billing_company', true);
-			if($customer_company){
+			if($customer_company && !in_array($customer_company, $companies)){
 				$companies[] = $customer_company;
 			}
 		}
@@ -104,8 +104,8 @@ class TBS_Delegate {
 		return !$this->empty_email;
 	}
 	
-	public function set_empty_email(){
-		$this->empty_email = true;
+	public function set_empty_email($empty = true){
+		$this->empty_email = $empty;
 	}
 	
 	public function set_first_name($value){

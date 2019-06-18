@@ -675,6 +675,9 @@ class TBS_Admin_Manual_Bookings {
 			'email' => '',
 			'phone' => '',
 		));
+		if($order->get_customer_id()){
+			$customer_address_data['existing_customer_ID'] = $order->get_customer_id();
+		}
 		// Create customer only when data entry is done
 		if($data_entry_complete){
 			$customer_id = tbs_admin_create_customer($customer_address_data);
@@ -827,7 +830,12 @@ class TBS_Admin_Manual_Bookings {
 					}
 					$empty_email = true;
 				}
-				$delegate = new TBS_Delegate($delegate_data['email']);
+				if(!empty($delegate_data['userID'])){
+					$delegate = new TBS_Delegate($delegate_data['userID']);
+					$delegate->set_email($delegate_data['email']);
+				}else{
+					$delegate = new TBS_Delegate($delegate_data['email']);
+				}
 				$delegate->set_first_name($delegate_data['first_name']);
 				$delegate->set_last_name($delegate_data['last_name']);
 				$delegate->set_notes($delegate_data['notes']);
@@ -836,6 +844,8 @@ class TBS_Admin_Manual_Bookings {
 				$delegate->add_customer($order->get_customer_id());
 				if($empty_email){
 					$delegate->set_empty_email();
+				}else{
+					$delegate->set_empty_email(false);
 				}
 				$delegate->save();
 				if($delegate->exists()){
