@@ -31,12 +31,18 @@ class TBS_WC_CRM {
 	}
 
 	public function init() {
-		//add_action('save_post', array($this, 'update_shop_order'), 999, 2);
 		add_action('woocommerce_new_order', array($this, 'tbh_crm_booking_update'));
 		add_action('woocommerce_update_order', array($this, 'tbh_crm_booking_update'));
-		add_action('tbh_wc_crm_booking_update_delegates', array($this, 'booking_update_delegates'));
 
 		add_action('wp_ajax_tbh_crm_reload_accounts', array($this, 'tbh_crm_reload_accounts'));
+		add_filter('wcrm_admin_general_fields', array($this, 'wcrm_admin_general_fields'));
+	}
+	public function wcrm_admin_general_fields($fields = array()){
+		if(!isset($fields['account_name'])){
+			return $fields;
+		}
+		asort($fields['account_name']['options'], SORT_NATURAL | SORT_FLAG_CASE);
+		return $fields;
 	}
 	public function tbh_crm_reload_accounts(){
 		check_admin_referer('tbs_tools_reload_accounts', '_tbsnonce');
@@ -63,43 +69,12 @@ class TBS_WC_CRM {
 			'status' => 'OK',
 		));
 	}
-	public function booking_update_delegates($booking_id) {
-		// $post_id and $post are required
-		if (empty($booking_id)) {
-			return;
-		}
-		self::$order_processed = true;
-		$this->process_order($booking_id);
-	}
 	public function tbh_crm_booking_update($booking_id) {
 		// $post_id and $post are required
 		if (empty($booking_id) || self::$order_processed) {
 			return;
 		}
 		$this->process_order($booking_id);
-	}
-	public function update_shop_order($post_id, $post) {
-		// $post_id and $post are required
-		if (empty($post_id) || empty($post)) {
-			return;
-		}
-
-		// Dont' save meta boxes for revisions or autosaves
-		if (defined('DOING_AUTOSAVE') || is_int(wp_is_post_revision($post)) || is_int(wp_is_post_autosave($post))) {
-			return;
-		}
-
-		// Check the nonce
-		if (empty($_POST['woocommerce_meta_nonce']) || !wp_verify_nonce($_POST['woocommerce_meta_nonce'], 'woocommerce_save_data')) {
-			return;
-		}
-
-		// Check the post being saved == the $post_id to prevent triggering this call for other save_post events
-		if (empty($_POST['post_ID']) || $_POST['post_ID'] != $post_id) {
-			return;
-		}
-
-		$this->process_order($post_id);
 	}
 
 	public function process_order($order_id){
@@ -116,12 +91,6 @@ class TBS_WC_CRM {
 		$account_id = $this->maybe_create_account($company);
 		if($account_id){
 			$this->update_customer_account_meta($crm_customer->c_id, $account_id);
-
-			$delegates_ids = $this->get_booking_delegates_id($order_id);
-			foreach($delegates_ids as $del_id){
-				$crm_del = wc_crm_get_customer($del_id, 'user_id');
-				$this->update_customer_account_meta($crm_del->c_id, $account_id);
-			}
 		}
 		wc_crm_clear_transient();
 	}
