@@ -303,10 +303,6 @@ class TBS_Admin_Online_Bookings {
 			$errors['_billing_last_name'] = 'Last name must not empty';
 			$has_error = true;
 		}
-		if(empty($_POST['_billing_company'])){
-			$errors['_billing_company'] = 'Company must not empty';
-			$has_error = true;
-		}
 		if(empty($_POST['_billing_address_1'])){
 			$errors['_billing_address_1'] = 'Address line 1 must not empty';
 			$has_error = true;
@@ -447,15 +443,7 @@ class TBS_Admin_Online_Bookings {
 				'errors' => $errors,
 			));
 		}
-		foreach($delegates_posted_data as $course_date_id => $cd_delegates){
-			$course_date = new TBS_Course_Date($course_date_id);
-			if(!$course_date->exists()){
-				continue;
-			}
-			foreach ($cd_delegates as $sln => $cd_delegate){
-				
-			}
-		}
+
 		if('completed' == $order->get_status()){
 			$order_delegates = array();
 			foreach($order_delegates_data as $delegate_data){
