@@ -89,12 +89,6 @@ $course_page_nottice = isset($course_settings['course_page_nottice'])?$course_se
 							}
 							?>
                         </div>
-                        <div class="course-enquiry-form">
-                            <h5 class="course-ef-title">Enquire</h5>
-                            <div class="course-efwrap">
-                                <?php echo do_shortcode('[contact-form-7 id="2057" title="Course Quick Enquiry"]'); ?>
-                            </div>
-                        </div>
                     </div>
                     <div class="course-content">
                         <div class="course-content-inner">
@@ -115,7 +109,7 @@ $course_page_nottice = isset($course_settings['course_page_nottice'])?$course_se
                             <?php } ?>
                             <?php if($the_course->trainer){ ?>
                             <div class="course-normal-text course-trainer">
-                                <h3>Trainer</h4>
+                                <h3>Trainer</h3>
                                 <div class="course-trainer-details clearfix">
                                     <div class="course-trainer-photo">
                                         <?php echo $the_course->trainer->photo; ?>
