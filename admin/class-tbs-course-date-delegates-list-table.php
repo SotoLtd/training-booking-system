@@ -72,7 +72,6 @@ class TBS_Course_Date_Delegates_List_Table extends WP_List_Table {
 	 */
 	public function get_columns() {
 		return array(
-			'id'    => 'id',
 			//'login' => __("Username", TBS_i18n::get_domain_name()),
 			'first_name' => __("First Name", TBS_i18n::get_domain_name()),
 			'last_name' => __("Last Name", TBS_i18n::get_domain_name()),
@@ -87,7 +86,7 @@ class TBS_Course_Date_Delegates_List_Table extends WP_List_Table {
 	 */
 	public function get_sortable_columns() {
 		return array(
-			'id'    => 'id',
+			//'login'    => 'login',
 			'first_name'    => 'first_name',
 			'last_name'   => 'last_name',
 			'email' => 'email',
@@ -101,8 +100,6 @@ class TBS_Course_Date_Delegates_List_Table extends WP_List_Table {
 	 */
 	public function column_default( $delegate, $column_name ) {
 		switch($column_name){
-			case 'id':
-				return '#' . $delegate->get_id();
 			case 'first_name': 
 				return $delegate->get_first_name();
 			case 'last_name': 

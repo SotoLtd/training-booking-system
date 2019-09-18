@@ -5,7 +5,7 @@
 			<?php echo $course_date->get_date_formatted(); ?>
 		</a> 
 		<?php if($course_date->is_private()): ?>
-		 <a class="private-course-permalink" href="<?php $course_date->get_permalink(); ?>" target="_blank"><span class="dashicons dashicons-admin-links"> url</span></a>
+		 <a class="private-course-permalink" href="<?php echo $course_date->get_permalink(); ?>" target="_blank"><span class="dashicons dashicons-admin-links"> url</span></a>
 		<?php endif;?>
 	</td>
 	<td><?php echo $course_date->get_duration_formatted(); ?></td>

@@ -218,7 +218,7 @@ class TBS_Customers_List_Table extends WP_List_Table {
 		
 		$args = array(
 			'number' => $this->get_query_arg('per_page', 12),
-			'paged' => $this->get_query_arg( 'current_page', 1 ),
+			'pages' => $this->get_query_arg( 'current_page', 1 ),
 			'orderby' => $this->get_query_arg( 'orderby'),
 			'order' => $this->get_query_arg( 'order'),
 			'count_total' => true,
