@@ -75,19 +75,7 @@ $course_page_nottice = isset($course_settings['course_page_nottice'])?$course_se
                                 </div>
                             </div>
                             <?php } ?>
-                            <?php 
-							foreach($the_course->location as $cl){
-								if( in_array($cl, array('onsite', 'nationaltc') )){
-									continue;
-								}
-								$location_group_term = get_term_by('slug', $cl, TBS_Custom_Types::get_location_group_data('type'));
-								?>
-								<div class="course-sbelement course-book-in-bristol">
-									<a title="" href="<?php echo get_page_link(361) . '?course_id=' . $the_course->id . '&location=' . $location_group_term->slug;?>">BOOK IN <?php echo $location_group_term->name; ?></a>
-								</div>
-							<?php
-							}
-							?>
+
                         </div>
                     </div>
                     <div class="course-content">
