@@ -368,6 +368,9 @@ class TBS_Admin {
 	 * 
 	 */
 	public function set_screen_option($status, $option, $value){
+		if(false !== strpos($option, 'per_page')) {
+			$value = min($value, 50);
+		}
 		return $value;
 	}
 	/**

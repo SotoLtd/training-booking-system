@@ -212,7 +212,9 @@ class Training_Booking_System {
 	 * @access   private
 	 */
 	private function define_admin_hooks() {
-
+		/**
+		 * @var $plugin_admin TBS_Admin
+		 */
 		$plugin_admin = new TBS_Admin( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
@@ -247,7 +249,7 @@ class Training_Booking_System {
 		$this->loader->add_action('untrashed_post', $plugin_admin, 'untrashed_post');
 		
 		
-		$this->loader->add_filter('set-screen-option', $plugin_admin, 'set_screen_option', 10, 3);
+		$this->loader->add_filter('set-screen-option', $plugin_admin, 'set_screen_option', 21, 3);
 		
 		// Term metafields
 		$course_taxonomy_name = TBS_Custom_Types::get_course_category_data('type');
@@ -276,7 +278,9 @@ class Training_Booking_System {
 	 * @access   private
 	 */
 	private function define_public_hooks() {
-
+		/**
+		 * @var TBS_Public
+		 */
 		$plugin_public = new TBS_Public( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'template_redirect', $plugin_public, 'template_redirect' );
@@ -303,6 +307,8 @@ class Training_Booking_System {
 		$this->loader->add_filter('woocommerce_cart_product_subtotal', $plugin_public, 'cart_product_subtotal_private_course', 10, 4);
 		$this->loader->add_filter('woocommerce_add_to_cart_fragments', $plugin_public, 'header_mini_cart_fragment');
 		$this->loader->add_filter('woocommerce_coupon_is_valid', $plugin_public, 'validate_coupon_course_ids', 20, 3);
+		$this->loader->add_filter('woocommerce_coupon_is_valid_for_product', $plugin_public, 'coupon_is_valid_for_courses', 20, 4);
+
 		$this->loader->add_action('woocommerce_before_calculate_totals', $plugin_public, 'woocommerce_before_calculate_totals');
 		$this->loader->add_action('woocommerce_after_calculate_totals', $plugin_public, 'woocommerce_after_calculate_totals');
 		
