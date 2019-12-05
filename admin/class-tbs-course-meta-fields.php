@@ -48,9 +48,11 @@ class TBS_Course_Meta_Fields {
 				'joining_instruction' => 'Joining instructions',
 				'course_map' => 'Course Map',
 				// Main Content
+				'who_needs_section_title' => 'Who needs section title',
 				'who_needs_to_do_text' => 'Who needs to do this course text',
 				'offer' => 'Offer',
 				'cbenefits' => 'Benefits',
+				'testimonials_section_title' => 'Testimonials section title',
 				'testimonials' => 'Testimonials',
 				'faqs' => 'FAQs',
 				'terms_condition' => 'Terms &amp; Conditions',
@@ -696,7 +698,32 @@ class TBS_Course_Meta_Fields {
 		</div>
 		<?php
 	}
-        
+
+	static function who_needs_section_title( $meta_key, $meta_label, $post_id = false ) {
+		$meta_value = get_post_meta( $post_id, $meta_key, true );
+		?>
+        <div class="tts-mb-field-wrap">
+            <div class="tts-mb-label"><label for="<?php echo $meta_key ?>"><strong><?php echo $meta_label; ?></strong></label></div>
+            <div class="tts-mb-field tts-text">
+                <input type="text" name="<?php echo $meta_key ?>" value="<?php echo esc_attr( $meta_value ); ?>" />
+                <p class="description">Enter title of the who needs to do this course section.</p>
+            </div>
+        </div>
+		<?php
+    }
+
+	static function testimonials_section_title( $meta_key, $meta_label, $post_id = false ) {
+		$meta_value = get_post_meta( $post_id, $meta_key, true );
+		?>
+        <div class="tts-mb-field-wrap">
+            <div class="tts-mb-label"><label for="<?php echo $meta_key ?>"><strong><?php echo $meta_label; ?></strong></label></div>
+            <div class="tts-mb-field tts-text">
+                <input type="text" name="<?php echo $meta_key ?>" value="<?php echo esc_attr( $meta_value ); ?>" />
+                <p class="description">Enter title of the testimonials section.</p>
+            </div>
+        </div>
+		<?php
+	}
 
 	static function who_needs_to_do_text( $meta_key, $meta_label, $post_id = false ) {
             $meta_value = get_post_meta( $post_id, $meta_key, true );
