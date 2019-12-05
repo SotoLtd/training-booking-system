@@ -1,5 +1,5 @@
 <?php
-get_header(); 
+get_header();
 $course_settings = get_option('tbs_settings');
 $course_page_nottice = isset($course_settings['course_page_nottice'])?$course_settings['course_page_nottice']:'';
 //<div class="course-sbelement course-price"></div>		
@@ -30,7 +30,7 @@ $course_page_nottice = isset($course_settings['course_page_nottice'])?$course_se
                                 </div>
                             </div>
                             <?php } ?>
-                            
+
                             <?php if($the_course->duration_text){ ?>
                             <div class="course-sbelement course-duration">
                                 <h4><?php echo do_shortcode(wpautop($the_course->duration_text)); ?></h4>
@@ -39,9 +39,9 @@ $course_page_nottice = isset($course_settings['course_page_nottice'])?$course_se
                             <?php if($the_course->price){ ?>
                             <div class="course-sbelement course-price">
                                 <h4>
-									<?php 
+									<?php
 									add_filter('woocommerce_price_trim_zeros', '__return_true');
-									echo $the_course->price_formatted(); 
+									echo $the_course->price_formatted();
 									remove_filter('woocommerce_price_trim_zeros', '__return_true');
 									?>
 								</h4>
@@ -53,11 +53,11 @@ $course_page_nottice = isset($course_settings['course_page_nottice'])?$course_se
                                 <?php } ?>
                             </div>
                             <?php } ?>
-                            
+
                             <?php if($the_course->location){ ?>
                             <div class="course-sbelement course-location">
                                 <h4>Location</h4>
-                                <?php 
+                                <?php
                                 echo '<ul>';
                                 foreach($the_course->location as $cl){
 									$location_group_term = get_term_by('slug', $cl, TBS_Custom_Types::get_location_group_data('type'));
@@ -83,10 +83,16 @@ $course_page_nottice = isset($course_settings['course_page_nottice'])?$course_se
                             <div class="course-description">
                                 <?php the_content(); ?>
                             </div>
-                            
+
                             <?php if($the_course->who_needs_to_do_text){ ?>
                             <div class="course-normal-text course-who-needs">
-                                <h3>Who Needs <?php the_title(); ?> </h3>
+                                <?php
+                                $who_needs_section_title = trim($the_course->who_needs_section_title);
+                                if(!$who_needs_section_title) {
+	                                $who_needs_section_title = 'Who Needs ' . get_the_title();
+                                }
+                                ?>
+                                <h3><?php echo $who_needs_section_title; ?></h3>
                                 <?php echo $the_course->who_needs_to_do_text(); ?>
                             </div>
                             <?php } ?>
@@ -109,7 +115,7 @@ $course_page_nottice = isset($course_settings['course_page_nottice'])?$course_se
                                 </div>
                             </div>
                             <?php } ?>
-                            
+
                             <div class="course-normal-text course-traingin-status">
                                 <h3 id="course-dates-list">Course Dates</h3>
 									<?php
@@ -134,9 +140,9 @@ $course_page_nottice = isset($course_settings['course_page_nottice'])?$course_se
 									}
 									?>
                             </div>
-                            
-							
-                            <?php if($the_course->faqs){ ?> 
+
+
+                            <?php if($the_course->faqs){ ?>
                             <div class="course-normal-text course-faqs">
                                 <h3>FAQs</h3>
                                 <ol class="course-faqs-list">
@@ -149,43 +155,49 @@ $course_page_nottice = isset($course_settings['course_page_nottice'])?$course_se
                                 </ol>
                             </div>
                             <?php } ?>
-                            
-                            <?php if($the_course->testimonials){ ?> 
-							<h3>Feedback on <?php the_title(); ?> Course</h3>
+
+                            <?php if($the_course->testimonials){ ?>
+	                            <?php
+	                            $testimonials_section_title = trim($the_course->testimonials_section_title);
+	                            if(!$testimonials_section_title) {
+		                            $testimonials_section_title = 'Feedback on ' . get_the_title();
+	                            }
+	                            ?>
+                                <h3><?php echo $testimonials_section_title; ?></h3>
                             <div class="course-normal-text course-testimonials flexslider">
                                 <div class="course-testimonials-wrap">
-                                <?php foreach($the_course->testimonials as $testimonial){ ?> 
+                                <?php foreach($the_course->testimonials as $testimonial){ ?>
                                 <div class="course-testimonial">
                                     <span class="tts-qoute-icon"></span>
-                                    <?php if(!empty($testimonial['testimonial'])){ ?> 
+                                    <?php if(!empty($testimonial['testimonial'])){ ?>
                                     <div class="course-testimonial-text">
                                         <p><?php echo $testimonial['testimonial']; ?></p>
                                         <div class="course-testimonial-author-details">
                                             <p class="ctad-author-name-job-title">
-                                                <?php if(!empty($testimonial['name'])){ echo $testimonial['name'];}?> 
-                                                <?php if(!empty($testimonial['job_title'])){ echo ' - '.$testimonial['job_title'];}?> 
+                                                <?php if(!empty($testimonial['name'])){ echo $testimonial['name'];}?>
+                                                <?php if(!empty($testimonial['job_title'])){ echo ' - '.$testimonial['job_title'];}?>
                                             </p>
-                                            <?php if(!empty($testimonial['company_name'])){ ?> 
+                                            <?php if(!empty($testimonial['company_name'])){ ?>
                                             <p class="ctad-author-job-title">
-                                                <?php echo $testimonial['company_name'];?> 
+                                                <?php echo $testimonial['company_name'];?>
                                             </p>
-                                             <?php }?> 
-                                            <?php if(!empty($testimonial['city'])){ ?> 
+                                             <?php }?>
+                                            <?php if(!empty($testimonial['city'])){ ?>
                                             <p class="ctad-author-city">
-                                                <?php echo $testimonial['city'];?> 
+                                                <?php echo $testimonial['city'];?>
                                             </p>
-                                             <?php }?> 
+                                             <?php }?>
                                         </div>
                                     </div>
                                     <div class="course-testimonial-author-image"><?php if(!empty($testimonial['photo'])){ echo '<img alt="" src="'. esc_url($testimonial['photo']) .'" />'; }?></div>
-                                    <?php } ?>  
+                                    <?php } ?>
                                     <span class="tts-qoute-icon-2"></span>
                                 </div>
-                                <?php }?> 
+                                <?php }?>
                                 </div>
                             </div>
-                            <?php } ?> 
-                            
+                            <?php } ?>
+
                             <?php if($the_course->terms_condition){ ?>
                             <div class="course-sbelement course-terms-conditions">
                                 <h4>TERMS &amp; CONDITIONS</h4>
@@ -203,8 +215,8 @@ $course_page_nottice = isset($course_settings['course_page_nottice'])?$course_se
         </div>
     </div>
 </main>
-<?php 
-add_action('wp_footer', 'tts_yanda_metrica'); 
+<?php
+add_action('wp_footer', 'tts_yanda_metrica');
 function tts_yanda_metrica(){
 ?>
 <script type="text/javascript"> (function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter42342714 = new Ya.Metrika({ id:42342714, clickmap:true, trackLinks:true, accurateTrackBounce:true, webvisor:true }); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = "https://mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks"); </script> <noscript><div><img src="https://mc.yandex.ru/watch/42342714" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
