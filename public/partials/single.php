@@ -148,7 +148,7 @@ $course_page_nottice = isset($course_settings['course_page_nottice'])?$course_se
                         </div>
                         <?php }?>
                         <div class="book-now-pp">
-                            <a title="" href="http://thetrainingsocieti.co.uk/6-or-more-delegates/"><img alt="" src="<?php echo get_stylesheet_directory_uri(); ?>/images/course/six-more-delegates-button.png"></a>
+                            <a title="" href="http://trainingsocieti.co.uk/6-or-more-delegates/"><img alt="" src="<?php echo get_stylesheet_directory_uri(); ?>/images/course/six-more-delegates-button.png"></a>
                         </div>
                         <div class="course-person-graphinc-1">
                             <?php

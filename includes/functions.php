@@ -822,5 +822,5 @@ function random_uqniq_user_email(){
 	$uniq_key = str_replace('.', '', $uniq_key);
 	$uniq_key = explode(' ', $uniq_key);
 	$uniq_key = $uniq_key[1] . '_' . $uniq_key[0];
-	return 'random_email_' . $uniq_key . '@thetrainingsocieti.co.uk';
+	return 'random_email_' . $uniq_key . '@trainingsocieti.co.uk';
 }

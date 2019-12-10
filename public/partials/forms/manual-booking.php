@@ -53,7 +53,7 @@ if($msg){
 	<p>Then return it to us by either:-</p>
 	<ul style="list-style: disc outside;padding-left: 15px;">
 		<li>Faxing to 0117 981 1344</li>
-		<li>Scanning and emailing to <a href="mailto:bookings@thetrainingsocieti.co.uk">bookings@thetrainingsocieti.co.uk</a></li>
+		<li>Scanning and emailing to <a href="mailto:bookings@trainingsocieti.co.uk">bookings@trainingsocieti.co.uk</a></li>
 		<li>Posting to The Training Societi Ltd, 1 Riverside Business Centre, St Annes, Bristol, BS4 4ED (Please note this may not always be the course venue)</li>
 	</ul>
 	<p>*If you prefer, you can Download PDF at any time and complete the booking details by hand, before signing and returning it as above.</p>
@@ -61,7 +61,7 @@ if($msg){
 	<p>PLEASE NOTE YOUR SPACE IS NOT GUARANTEED UNTIL WE RECEIVE FULL PAYMENT (Unless you are an official account customer.)</p>
 </div>
 <h1 class="entry-title">Edit details for booking #<?php echo $order->get_order_number(); ?></h1>
-<form method="post" action="<?php echo add_query_arg(array('booking_manual_key' => $order->get_meta( '_tbs_online_form_id', true)), site_url()); ?>">
+<form id="fe-manual-booking-form" method="post" action="<?php echo add_query_arg(array('booking_manual_key' => $order->get_meta( '_tbs_online_form_id', true)), site_url()); ?>">
 	<input type="hidden" name="manual_booking_form_save"/>
 	<input type="hidden" name="fe_manual_booking_id" value="<?php echo $order_id; ?>"/>
 		
@@ -385,4 +385,78 @@ if($msg){
 		<p>For credit account customers we will send your invoice (payable within 30 days), joining instruction on completion and return of the booking form.</p>
 		<p>If you do not receive your Joining Instructions when expected, please check your Junk E-mail folder.</p>
 	</div>
+    <script>
+        (function($){
+            $(document).ready(function () {
+                $("#mbs-customer-details p").append('<span class="tts-error-msg">Required field</span>');
+                $("#fe-manual-booking-form").on("submit", function (event) {
+                    var $form = $(this);
+                    var $fn = $("#billing_first_name", $form);
+                    var $ln = $("#billing_last_name", $form);
+                    var $a1 = $("#billing_address_1", $form);
+                    var $bc = $("#billing_city", $form);
+                    var $pc = $("#billing_postcode", $form);
+                    var $p = $("#billing_phone", $form);
+                    var $e = $("#billing_email", $form);
+                    var hasError  = false;
+
+                    if(!$fn.val()) {
+                        $fn.closest("p").addClass("tts-validation-failed");
+                        hasError = true;
+                    }else{
+                        $fn.closest("p").removeClass("tts-validation-failed");
+                    }
+
+                    if(!$ln.val()) {
+                        $ln.closest("p").addClass("tts-validation-failed");
+                        hasError = true;
+                    }else{
+                        $ln.closest("p").removeClass("tts-validation-failed");
+                    }
+
+                    if(!$a1.val()) {
+                        $a1.closest("p").addClass("tts-validation-failed");
+                        hasError = true;
+                    }else{
+                        $a1.closest("p").removeClass("tts-validation-failed");
+                    }
+
+                    if(!$bc.val()) {
+                        $bc.closest("p").addClass("tts-validation-failed");
+                        hasError = true;
+                    }else{
+                        $bc.closest("p").removeClass("tts-validation-failed");
+                    }
+
+                    if(!$pc.val()) {
+                        $pc.closest("p").addClass("tts-validation-failed");
+                        hasError = true;
+                    }else{
+                        $pc.closest("p").removeClass("tts-validation-failed");
+                    }
+
+                    if(!$p.val()) {
+                        $p.closest("p").addClass("tts-validation-failed");
+                        hasError = true;
+                    }else{
+                        $p.closest("p").removeClass("tts-validation-failed");
+                    }
+
+                    if(!$e.val()) {
+                        $e.closest("p").addClass("tts-validation-failed");
+                        hasError = true;
+                    }else{
+                        $e.closest("p").removeClass("tts-validation-failed");
+                    }
+                    if(hasError){
+                        event.preventDefault();
+                        $("html, body").animate({
+                            scrollTop: $(".tts-validation-failed").eq(0).offset().top - 100
+                        }, 200);
+                        return false;
+                    }
+                });
+            });
+        })(jQuery);
+    </script>
 </form>

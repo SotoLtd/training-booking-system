@@ -253,7 +253,7 @@ $order_id = $order->get_id();
 			<p>Then return it to us by either:-</p>
 			<ul>
 				<li>Faxing to 0117 981 1344</li>
-				<li>Scanning and emailing to <a href="mailto:bookings@thetrainingsocieti.co.uk">bookings@thetrainingsocieti.co.uk</a></li>
+				<li>Scanning and emailing to <a href="mailto:bookings@trainingsocieti.co.uk">bookings@trainingsocieti.co.uk</a></li>
 				<li>Posting to The Training Societi Ltd, 1 Riverside Business Centre, St Annes, Bristol, BS4 4ED (Please note this may not always be the course venue)</li>
 			</ul>
 			<p>*If you prefer, you can Download PDF at any time and complete the booking details by hand, before signing and returning it as above.</p>
