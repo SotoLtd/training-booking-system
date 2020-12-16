@@ -138,7 +138,7 @@ $course_page_nottice = isset( $course_settings['course_page_nottice'] ) ? $cours
 											}
 											$course_dates = $the_course->get_dates( $date_args );
 
-											if ( count( $course_dates > 0 ) ) {
+											if ( $course_dates && count( $course_dates ) > 0 ) {
 												tbs_get_template_part( 'course-date-loop', true, array(
 													'course'            => $the_course,
 													'course_dates'      => $course_dates,

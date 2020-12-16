@@ -279,7 +279,7 @@ class Training_Booking_System {
 	 */
 	private function define_public_hooks() {
 		/**
-		 * @var TBS_Public
+		 * @var $plugin_public TBS_Public
 		 */
 		$plugin_public = new TBS_Public( $this->get_plugin_name(), $this->get_version() );
 

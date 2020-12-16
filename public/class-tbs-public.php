@@ -1515,22 +1515,22 @@ class TBS_Public {
 				wp_redirect( add_query_arg( array(
 					'booking_manual_key' => $online_form_key,
 					'status'             => 'submitted'
-				), site_url() ), 200 );
+				), site_url() ), 303 );
 				exit;
 			}
 		}
 
 		if ( $order_id ) {
-			wp_redirect( add_query_arg( array(
+			wp_safe_redirect( add_query_arg( array(
 				'booking_manual_key' => $online_form_key,
 				'status'             => 'saved'
-			), site_url() ), 200 );
+			), site_url() ), 303 );
 			exit;
 		} else {
 			wp_redirect( add_query_arg( array(
 				'booking_manual_key' => $online_form_key,
 				'status'             => 'failed'
-			), site_url() ), 200 );
+			), site_url() ), 303 );
 			exit;
 		}
 

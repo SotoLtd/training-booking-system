@@ -314,6 +314,7 @@
                         data: {
                             action: 'tbs_get_course_date_edit_form',
                             course_id: $tbsModal.data('courseid'),
+                            _tbsnonce: $tbsModal.data('nonce'),
                             type: 'add'
                         },
                         dataType: 'json',
@@ -449,6 +450,7 @@
                             data: {
                                 action: 'tbs_add_course_date',
                                 course_id: $tbsModal.data('courseid'),
+                                _tbsnonce: $tbsModal.data('nonce'),
                                 date_data: data
                             },
                             dataType: 'json',
@@ -493,6 +495,7 @@
                         data: {
                             action: 'tbs_get_course_date_edit_form',
                             course_id: $tbsModal.data('courseid'),
+                            _tbsnonce: $tbsModal.data('nonce'),
                             course_date_id: $button.data('coursedateid'),
                             type: 'edit'
                         },
@@ -629,6 +632,7 @@
                             data: {
                                 action: 'tbs_update_course_date',
                                 course_id: $tbsModal.data('courseid'),
+                                _tbsnonce: $tbsModal.data('nonce'),
                                 course_date_id: data['course_date_id'],
                                 date_data: data
                             },
@@ -680,6 +684,8 @@
                             url: WPTBS.ajaxUrl,
                             data: {
                                 action: 'tbs_delete_course_date',
+                                course_id: $tbsModal.data('courseid'),
+                                _tbsnonce: $tbsModal.data('nonce'),
                                 course_date_id: $button.data('coursedateid')
                             },
                             dataType: 'json',

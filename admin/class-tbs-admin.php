@@ -514,7 +514,7 @@ class TBS_Admin {
 		/**
 		 * @todo Add a nonce for security tighten
 		 */
-		check_admin_referer();
+		check_admin_referer('tbs_course_update_' . $_POST['course_id'], '_tbsnonce');
 		if(empty($_POST['course_id'])){
 			wp_send_json(array(
 				'status' => 'NOTOK',
@@ -583,7 +583,7 @@ class TBS_Admin {
 	 * Ajax handler for adding course date
 	 */
 	public function ajax_add_course_date(){
-		check_admin_referer();
+		check_admin_referer('tbs_course_update_' . $_POST['course_id'], '_tbsnonce');
 		$course_id = absint($_POST['course_id']);
 		if(empty($_POST['date_data'])){
 			wp_send_json(array(
@@ -673,7 +673,7 @@ class TBS_Admin {
 	 * Ajax Handler for updating course date
 	 */
 	public function update_course_date(){
-		check_admin_referer();
+		check_admin_referer('tbs_course_update_' . $_POST['course_id'], '_tbsnonce');
 		$course_id = !empty($_POST['course_id'])?absint($_POST['course_id']):false;
 		$course_date_id = !empty($_POST['course_date_id'])?absint($_POST['course_date_id']):false;
 		if(!$course_date_id || !$course_id){
@@ -767,7 +767,7 @@ class TBS_Admin {
 	 * Ajax handler for deleting course date
 	 */
 	public function delete_course_date(){
-		check_admin_referer();
+		check_admin_referer( 'tbs_course_update_' . $_POST['course_id'], '_tbsnonce');
 		$course_date_id = absint($_POST['course_date_id']);
 		if(empty($course_date_id)){
 			wp_send_json(array(

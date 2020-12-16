@@ -27,7 +27,7 @@ class TBS_Course_Date_Info_List_Table extends WP_List_Table {
 	 * Set query all query args
 	 */
 	public function set_query_data(){
-		$this->query_data['per_page'] = min($this->get_items_per_page('course_items_per_page', 12), 60);
+		$this->query_data['per_page'] = $this->get_items_per_page('course_items_per_page', 12);
 		$this->query_data['current_page'] = $this->get_pagenum();
 		if(isset($_REQUEST['orderby'])){
 			$this->query_data['orderby'] = trim($_REQUEST['orderby']);

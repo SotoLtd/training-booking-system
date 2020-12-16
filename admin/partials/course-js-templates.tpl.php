@@ -1,6 +1,6 @@
 
 
-<div id="tbs-modal" title="" data-courseid="<?php echo $course_id; ?>">
+<div id="tbs-modal" title="" data-courseid="<?php echo $course_id; ?>" data-nonce="<?php echo wp_create_nonce('tbs_course_update_' . $course_id) ?>">
 	<div class="tbs-modal-inner">
 		
 	</div>

@@ -126,8 +126,9 @@ extract($form_data);
 				<label for="cdjoininginstruction" class="tbs-input-label">Joining instructions</label>
 				<div class="tbs-wp-editor-holder">
 					<?php 
-					add_filter( 'wp_default_editor', create_function('', 'return "visual";') );
+					add_filter( 'wp_default_editor', 'tts_default_editor_visual');
 					wp_editor( $form_joining_instruction, 'cdjoininginstruction');
+                    remove_filter( 'wp_default_editor', 'tts_default_editor_visual');
 					?>
 				</div>
 			</div>

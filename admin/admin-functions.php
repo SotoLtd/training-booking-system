@@ -407,3 +407,7 @@ function tbs_admin_create_customer($data = array()){
 	
 	return $customer_id;
 }
+
+function tts_default_editor_visual ($default_editor = '') {
+    return 'visual';
+}
