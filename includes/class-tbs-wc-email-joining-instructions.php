@@ -159,12 +159,12 @@ class TBS_WC_Email_Joining_Instructions extends WC_Email {
 	public function get_from_address($from_email = '') {
 		$email = trim(tbs_get_settings('joining_instruction_form_email', ''));
 		if($email){
-			$from_email = $email;
+			$from_address = $email;
 		}else{
-			$from_email = apply_filters( 'woocommerce_email_from_address', get_option( 'woocommerce_email_from_address' ), $this, $from_email );
+			$from_address = apply_filters( 'woocommerce_email_from_address', get_option( 'woocommerce_email_from_address' ), $this, $from_email );
 		}
 		
-		return sanitize_email( $from_email );
+		return sanitize_email( $from_address );
 	}
 
 	/**
