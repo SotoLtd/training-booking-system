@@ -659,7 +659,6 @@ class TBS_Admin_Manual_Bookings {
 		$order_id = $order->get_id();
 		
 		$booking_data['id'] = $order_id;
-		$delegates_posted_data = isset($_POST['delegates']) && is_array($_POST['delegates']) ? $_POST['delegates'] : array();
 		
 		// Process Customer Adrress
 		$customer_address_data = is_array($_POST['customer_data']) ? $_POST['customer_data'] : array();

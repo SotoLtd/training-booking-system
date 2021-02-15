@@ -104,8 +104,8 @@ class TBS_Delegate {
 		return !$this->empty_email;
 	}
 	
-	public function set_empty_email(){
-		$this->empty_email = true;
+	public function set_empty_email($is_empty = true){
+		$this->empty_email = $is_empty;
 	}
 	
 	public function set_first_name($value){

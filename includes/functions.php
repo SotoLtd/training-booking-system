@@ -246,9 +246,9 @@ function tbs_get_address_fields($key_base){
 }
 /**
  * 
- * @param type $key key to find
- * @param type $arr Input array
- * @param type $default
+ * @param string $key key to find
+ * @param array $arr Input array
+ * @param mixed $default
  * @return mixed|boolean
  */
 function tbs_arr_get($key, $arr, $default = ''){
